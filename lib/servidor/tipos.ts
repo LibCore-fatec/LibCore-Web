@@ -12,5 +12,3 @@ export type Paginacao = {
   limite: number;
   deslocamento: number;
 };
-
-export type AplicacaoCliente = "web-admin" | "mobile-aluno" | "totem";
