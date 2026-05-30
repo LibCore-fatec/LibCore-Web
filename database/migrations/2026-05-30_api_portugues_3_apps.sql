@@ -5,6 +5,9 @@ ALTER TABLE usuarios
   ADD COLUMN IF NOT EXISTS ativo tinyint(1) NOT NULL DEFAULT 1,
   ADD COLUMN IF NOT EXISTS senha_hash varchar(128) NULL,
   ADD COLUMN IF NOT EXISTS senha_salt varchar(64) NULL,
+  ADD COLUMN IF NOT EXISTS token_validacao char(6) NULL,
+  ADD COLUMN IF NOT EXISTS token_validacao_ativo tinyint(1) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS token_validacao_gerado_em datetime NULL,
   MODIFY COLUMN tipo_usuario enum('LEITOR','BIBLIOTECARIO','ADMIN','TOTEM') NOT NULL;
 
 ALTER TABLE livros

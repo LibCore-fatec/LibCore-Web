@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import type { IconName } from "@/lib/types";
 
 type InfoRowProps = {
@@ -17,3 +17,4 @@ export function InfoRow({ icon, text }: InfoRowProps) {
     </div>
   );
 }
+

@@ -37,9 +37,13 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `ativo` tinyint(1) NOT NULL DEFAULT 1,
   `senha_hash` varchar(128) DEFAULT NULL,
   `senha_salt` varchar(64) DEFAULT NULL,
+  `token_validacao` char(6) DEFAULT NULL,
+  `token_validacao_ativo` tinyint(1) NOT NULL DEFAULT 0,
+  `token_validacao_gerado_em` datetime DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `email_usuario` (`email_usuario`),
-  UNIQUE KEY `cpf_usuario` (`cpf_usuario`)
+  UNIQUE KEY `cpf_usuario` (`cpf_usuario`),
+  KEY `token_validacao_idx` (`token_validacao`, `token_validacao_ativo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Copiando estrutura para tabela libcore.livros

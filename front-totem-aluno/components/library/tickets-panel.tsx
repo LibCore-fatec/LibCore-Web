@@ -1,4 +1,4 @@
-import { formatTicketStatus } from "@/lib/mock-data";
+﻿import { formatTicketStatus } from "@/lib/mock-data";
 import type { Ticket } from "@/lib/types";
 
 type TicketsPanelProps = {
@@ -19,11 +19,11 @@ export function TicketsPanel({
       <div className="cps-card p-5">
         <h3 className="text-xl font-semibold">Registrar ticket</h3>
         <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-          Informe problemas com livros, RFID, localização ou espaços de estudo.
+          Informe problemas com livros, RFID, localizaÃ§Ã£o ou espaÃ§os de estudo.
         </p>
         <textarea
           className="mt-5 min-h-36 w-full resize-none rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-3 text-sm outline-none"
-          placeholder="Descreva a solicitação"
+          placeholder="Descreva a solicitaÃ§Ã£o"
           value={ticketDescription}
           onChange={(event) => onTicketDescriptionChange(event.target.value)}
         />
@@ -50,7 +50,7 @@ export function TicketsPanel({
                     {ticket.descricao ?? ticket.tipo}
                   </p>
                   <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-                    {ticket.tipo} ·{" "}
+                    {ticket.tipo} Â·{" "}
                     {new Date(ticket.data_criacao).toLocaleDateString("pt-BR")}
                   </p>
                 </div>
@@ -65,3 +65,4 @@ export function TicketsPanel({
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { InfoBlock } from "@/components/ui/info-block";
 import type { CatalogBook } from "@/lib/types";
 
@@ -15,7 +15,7 @@ export function MapPanel({ selectedBook }: MapPanelProps) {
         <div className="border-b border-[var(--cps-border)] p-5">
           <h3 className="text-xl font-semibold">Mapa digital do acervo</h3>
           <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-            Localização atual baseada na etiqueta {selectedBook.rfid_livro}.
+            LocalizaÃ§Ã£o atual baseada na etiqueta {selectedBook.etiqueta_rfid}.
           </p>
         </div>
         <div className="grid min-h-[430px] gap-4 p-5 md:grid-cols-4">
@@ -59,13 +59,13 @@ export function MapPanel({ selectedBook }: MapPanelProps) {
         </p>
         <div className="mt-5 space-y-4">
           <InfoBlock
-            label="Localização"
+            label="LocalizaÃ§Ã£o"
             value={selectedBook.locationLabel}
             icon="map"
           />
           <InfoBlock
             label="Etiqueta RFID"
-            value={selectedBook.rfid_livro}
+            value={selectedBook.etiqueta_rfid}
             icon="rfid"
           />
           <InfoBlock label="Status" value={selectedBook.statusLabel} icon="check" />
@@ -74,3 +74,4 @@ export function MapPanel({ selectedBook }: MapPanelProps) {
     </div>
   );
 }
+

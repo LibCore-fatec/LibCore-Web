@@ -1,14 +1,16 @@
 import { Icon } from "@/components/icons";
 import { InfoRow } from "@/components/ui/info-row";
-import { studySpaces } from "@/lib/mock-data";
+import type { StudySpace } from "@/lib/types";
 
 type SpacesPanelProps = {
   reservedSpaceIds: string[];
+  studySpaces: StudySpace[];
   onReserveSpace: (spaceId: string, spaceName: string) => void;
 };
 
 export function SpacesPanel({
   reservedSpaceIds,
+  studySpaces,
   onReserveSpace,
 }: SpacesPanelProps) {
   return (

@@ -1,15 +1,19 @@
 import { InfoBlock } from "@/components/ui/info-block";
-import { loanRecords } from "@/lib/mock-data";
+import type { LoanRecord } from "@/lib/types";
 
 type HistoryPanelProps = {
+  loanRecords: LoanRecord[];
   renewedLoanIds: number[];
   onRenewLoan: (loanId: number, title: string) => void;
 };
 
 export function HistoryPanel({
+  loanRecords,
   renewedLoanIds,
   onRenewLoan,
 }: HistoryPanelProps) {
+  const emprestimosAtivos = loanRecords.filter((loan) => loan.tipo === "EMPRESTIMO").length;
+
   return (
     <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
       <div className="cps-card p-5">
@@ -28,7 +32,7 @@ export function HistoryPanel({
                     {loan.dateLabel}
                   </p>
                   <p className="text-sm text-[var(--cps-text-muted)]">
-                    {renewed ? "Nova devolução: 13/06/2026" : loan.dueLabel}
+                    {renewed ? "Nova devolução solicitada" : loan.dueLabel}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -56,11 +60,11 @@ export function HistoryPanel({
       <div className="cps-card p-5">
         <h3 className="text-xl font-semibold">Resumo</h3>
         <div className="mt-5 space-y-4">
-          <InfoBlock label="Empréstimos ativos" value="1 livro" icon="book" />
-          <InfoBlock label="Multas pendentes" value="Qte 0.00" icon="check" />
+          <InfoBlock label="Empréstimos ativos" value={`${emprestimosAtivos} livro(s)`} icon="book" />
+          <InfoBlock label="Multas pendentes" value="R$ 0,00" icon="check" />
           <InfoBlock
             label="Próxima devolução"
-            value="06/06/2026"
+            value={loanRecords[0]?.dueLabel ?? "Sem empréstimos ativos"}
             icon="clock"
           />
         </div>

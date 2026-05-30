@@ -1,4 +1,5 @@
 import type { RowDataPacket } from "mysql2/promise";
+import { randomInt } from "crypto";
 import { consultar, consultarUm, executar } from "@/lib/servidor/banco/conexao";
 import { criarHashSenha, criarToken, senhaConfere } from "@/lib/servidor/autenticacao/jwt";
 import { ErroApi } from "@/lib/servidor/http/respostas";
@@ -94,6 +95,86 @@ export async function buscarUsuario(id_usuario: number) {
   );
   if (!usuario) throw new ErroApi(404, "USUARIO_NAO_ENCONTRADO", "Usuário não encontrado.");
   return usuario;
+}
+
+function gerarTokenNumerico() {
+  return String(randomInt(0, 1_000_000)).padStart(6, "0");
+}
+
+export async function gerarTokenValidacaoAluno(sessao: SessaoApi) {
+  if (sessao.tipo_usuario !== "LEITOR") {
+    throw new ErroApi(403, "TOKEN_APENAS_LEITOR", "Somente alunos podem gerar token de validação.");
+  }
+
+  let token = gerarTokenNumerico();
+  for (let tentativa = 0; tentativa < 5; tentativa += 1) {
+    const existente = await consultarUm<Linha>(
+      `SELECT id_usuario FROM usuarios WHERE token_validacao = :token AND token_validacao_ativo = 1 LIMIT 1`,
+      { token }
+    );
+    if (!existente) break;
+    token = gerarTokenNumerico();
+  }
+
+  await executar(
+    `UPDATE usuarios
+        SET token_validacao = :token,
+            token_validacao_ativo = 1,
+            token_validacao_gerado_em = NOW()
+      WHERE id_usuario = :id_usuario`,
+    { token, id_usuario: sessao.id_usuario }
+  );
+
+  return obterTokenValidacaoAluno(sessao);
+}
+
+export async function obterTokenValidacaoAluno(sessao: SessaoApi) {
+  const token = await consultarUm<Linha>(
+    `SELECT id_usuario, token_validacao, token_validacao_ativo, token_validacao_gerado_em
+       FROM usuarios
+      WHERE id_usuario = :id_usuario
+      LIMIT 1`,
+    { id_usuario: sessao.id_usuario }
+  );
+  if (!token) throw new ErroApi(404, "USUARIO_NAO_ENCONTRADO", "Usuário não encontrado.");
+
+  return {
+    id_usuario: token.id_usuario,
+    token_validacao: token.token_validacao,
+    token_validacao_ativo: Boolean(token.token_validacao_ativo),
+    token_validacao_gerado_em: token.token_validacao_gerado_em
+  };
+}
+
+export async function validarTokenTotemPrincipal(token_validacao: string) {
+  if (!/^\d{6}$/.test(token_validacao)) {
+    throw new ErroApi(400, "TOKEN_INVALIDO", "O token de validação deve ter 6 números.");
+  }
+
+  const usuario = await consultarUm<Linha>(
+    `SELECT id_usuario, nome_usuario, email_usuario, tipo_usuario, token_validacao_gerado_em
+       FROM usuarios
+      WHERE token_validacao = :token_validacao
+        AND token_validacao_ativo = 1
+        AND tipo_usuario = 'LEITOR'
+      LIMIT 1`,
+    { token_validacao }
+  );
+
+  if (!usuario) {
+    throw new ErroApi(401, "TOKEN_NAO_VALIDADO", "Token não encontrado ou inativo.");
+  }
+
+  return {
+    usuario: {
+      id_usuario: usuario.id_usuario,
+      nome_usuario: usuario.nome_usuario,
+      email_usuario: usuario.email_usuario,
+      tipo_usuario: usuario.tipo_usuario
+    },
+    token_validacao_gerado_em: usuario.token_validacao_gerado_em,
+    validado: true
+  };
 }
 
 export async function criarUsuario(dados: Record<string, unknown>) {
@@ -249,6 +330,15 @@ export async function emprestarLivro(id_usuario: number, etiqueta_rfid: string) 
   return buscarLivro(livro.id_livro);
 }
 
+export async function emprestarLivroComToken(token_validacao: string, etiqueta_rfid: string) {
+  const validacao = await validarTokenTotemPrincipal(token_validacao);
+  return {
+    usuario: validacao.usuario,
+    livro: await emprestarLivro(validacao.usuario.id_usuario, etiqueta_rfid),
+    token_continua_ativo: true
+  };
+}
+
 export async function devolverLivro(id_usuario: number, etiqueta_rfid: string) {
   const livro = await buscarLivroPorRfid(etiqueta_rfid);
   const emprestimo = await consultarUm<Linha>(
@@ -263,7 +353,22 @@ export async function devolverLivro(id_usuario: number, etiqueta_rfid: string) {
   );
   await executar(`UPDATE livros SET status_livro = 'DISPONIVEL' WHERE id_livro = :id_livro`, { id_livro: livro.id_livro });
   await registrarTransacao("DEVOLUCAO", id_usuario, livro.id_livro);
+  await executar(
+    `UPDATE usuarios
+        SET token_validacao_ativo = 0
+      WHERE id_usuario = :id_usuario`,
+    { id_usuario }
+  );
   return buscarLivro(livro.id_livro);
+}
+
+export async function devolverLivroComToken(token_validacao: string, etiqueta_rfid: string) {
+  const validacao = await validarTokenTotemPrincipal(token_validacao);
+  return {
+    usuario: validacao.usuario,
+    livro: await devolverLivro(validacao.usuario.id_usuario, etiqueta_rfid),
+    token_continua_ativo: false
+  };
 }
 
 export async function registrarTransacao(tipo: string, id_usuario: number, id_livro: number) {

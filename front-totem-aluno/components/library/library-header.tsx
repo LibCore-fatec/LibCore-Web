@@ -1,6 +1,5 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { MetricCard } from "@/components/ui/metric-card";
-import { bookStatusFilters, setores } from "@/lib/mock-data";
 import type { BookStatusFilter } from "@/lib/types";
 
 type LibraryHeaderProps = {
@@ -8,20 +7,34 @@ type LibraryHeaderProps = {
   loanedCount: number;
   searchTerm: string;
   setor: string;
+  setores: string[];
   statusFilter: BookStatusFilter;
+  tokenValidacao: string | null;
   ticketsCount: number;
+  onGenerateToken: () => void;
   onSearchChange: (value: string) => void;
   onSetorChange: (setor: string) => void;
   onStatusFilterChange: (status: BookStatusFilter) => void;
 };
+
+const bookStatusFilters: { label: string; value: BookStatusFilter }[] = [
+  { label: "Todos", value: "TODOS" },
+  { label: "Disponível", value: "DISPONIVEL" },
+  { label: "Emprestado", value: "EMPRESTADO" },
+  { label: "Reservado", value: "RESERVADO" },
+  { label: "Manutenção", value: "MANUTENCAO" }
+];
 
 export function LibraryHeader({
   availableCount,
   loanedCount,
   searchTerm,
   setor,
+  setores,
   statusFilter,
+  tokenValidacao,
   ticketsCount,
+  onGenerateToken,
   onSearchChange,
   onSetorChange,
   onStatusFilterChange,
@@ -33,8 +46,8 @@ export function LibraryHeader({
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-semibold">Acervo</h2>
             <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-              Consulte livros disponíveis e emprestados por nome, RFID, setor
-              ou localização.
+              Consulte livros disponÃ­veis e emprestados por nome, RFID, setor
+              ou localizaÃ§Ã£o.
             </p>
           </div>
 
@@ -46,7 +59,7 @@ export function LibraryHeader({
               />
               <input
                 className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--cps-text-muted)]"
-                placeholder="Buscar por nome, RFID ou localização"
+                placeholder="Buscar por nome, RFID ou localizaÃ§Ã£o"
                 value={searchTerm}
                 onChange={(event) => onSearchChange(event.target.value)}
               />
@@ -83,7 +96,7 @@ export function LibraryHeader({
 
       <div className="cps-card grid gap-3 p-4 sm:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3">
         <MetricCard
-          label="Disponíveis"
+          label="DisponÃ­veis"
           value={String(availableCount)}
           icon="book"
         />
@@ -93,7 +106,15 @@ export function LibraryHeader({
           icon="clock"
         />
         <MetricCard label="Tickets" value={String(ticketsCount)} icon="ticket" />
+        <button
+          className="h-11 rounded-md bg-[var(--cps-accent)] px-3 text-sm font-semibold text-white sm:col-span-3 lg:col-span-1 2xl:col-span-3"
+          onClick={onGenerateToken}
+          type="button"
+        >
+          {tokenValidacao ? `Token: ${tokenValidacao}` : "Gerar token do aluno"}
+        </button>
       </div>
     </div>
   );
 }
+

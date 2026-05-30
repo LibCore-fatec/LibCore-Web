@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import type { IconName } from "@/lib/types";
 
 type MetricCardProps = {
@@ -20,3 +20,4 @@ export function MetricCard({ label, value, icon }: MetricCardProps) {
     </div>
   );
 }
+

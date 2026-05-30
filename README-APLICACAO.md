@@ -34,6 +34,8 @@ npm run build
 - Resposta de sucesso: `{ "dados": ..., "metadados": ... }`.
 - Resposta de erro: `{ "erro": { "codigo": "...", "mensagem": "...", "detalhes": ... } }`.
 - Autenticação: `Authorization: Bearer <token>`.
+- Mobile aluno: gera token em `POST /api/v1/usuarios/meu-token/gerar`.
+- Mobile Totem Principal: valida token em `POST /api/v1/totem-principal/validar-token`, consulta RFID em `GET /api/v1/totem-principal/livro/:etiqueta`, empresta e devolve em `/api/v1/totem-principal`.
 
 ## Aplicações
 
@@ -53,3 +55,13 @@ Exemplo:
   "id_usuario": 1
 }
 ```
+
+## Front-totem-aluno
+
+O app `front-totem-aluno` consome a API pela variável:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+```
+
+Quando a API ou o login não estiverem disponíveis, o app mantém os dados de `mock-data.ts` apenas como fallback de desenvolvimento.

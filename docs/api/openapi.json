@@ -86,6 +86,27 @@
     "/totem/identificar": { "post": { "summary": "Identificar usuário no totem", "tags": ["Totem"] } },
     "/totem/emprestar": { "post": { "summary": "Registrar empréstimo via RFID", "tags": ["Totem"] } },
     "/totem/devolver": { "post": { "summary": "Registrar devolução via RFID", "tags": ["Totem"] } },
+    "/usuarios/meu-token": {
+      "get": { "summary": "Consultar token numérico ativo do aluno", "tags": ["Mobile/Aluno"] }
+    },
+    "/usuarios/meu-token/gerar": {
+      "post": { "summary": "Gerar token numérico de 6 dígitos para validação no Mobile Totem Principal", "tags": ["Mobile/Aluno"] }
+    },
+    "/totem-principal/validar-token": {
+      "post": { "summary": "Validar token numérico do aluno no Mobile Totem Principal", "tags": ["Mobile Totem Principal"] }
+    },
+    "/totem-principal/livro/{etiqueta}": {
+      "get": { "summary": "Consultar livro por RFID ou QR mock no Mobile Totem Principal", "tags": ["Mobile Totem Principal"] }
+    },
+    "/totem-principal/emprestar": {
+      "post": { "summary": "Registrar empréstimo com token do aluno e RFID", "tags": ["Mobile Totem Principal"] }
+    },
+    "/totem-principal/devolver": {
+      "post": { "summary": "Registrar devolução com token do aluno e desativar token", "tags": ["Mobile Totem Principal"] }
+    },
+    "/totem-principal/tickets": {
+      "post": { "summary": "Abrir ticket pelo Mobile Totem Principal", "tags": ["Mobile Totem Principal"] }
+    },
     "/emprestimos/meus": { "get": { "summary": "Histórico de empréstimos do aluno", "tags": ["Mobile/Aluno"] } },
     "/reservas": {
       "get": { "summary": "Listar reservas do usuário ou todas para admin", "tags": ["Mobile/Aluno", "Web/Admin"] },

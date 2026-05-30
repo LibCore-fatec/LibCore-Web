@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { navItems } from "@/lib/mock-data";
 import type { SectionId } from "@/lib/types";
 
@@ -31,3 +31,4 @@ export function MobileNavigation({
     </div>
   );
 }
+

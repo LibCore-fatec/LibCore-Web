@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import type { StudentProfile } from "@/lib/types";
 
 type TopBarProps = {
@@ -24,7 +24,7 @@ export function TopBar({
         className="flex items-center gap-2 rounded-md text-left text-2xl font-semibold md:text-[2rem]"
         onClick={onHomeClick}
         type="button"
-        aria-label="Abrir início do Conecta"
+        aria-label="Abrir inÃ­cio do Conecta"
       >
         <Icon name="share" className="h-8 w-8 shrink-0" />
         <span>Conecta</span>
@@ -42,14 +42,14 @@ export function TopBar({
         <button
           className="relative hidden h-9 w-9 place-items-center rounded-md bg-white/10 transition hover:bg-white/18 sm:grid"
           type="button"
-          aria-label="Abrir notificações"
+          aria-label="Abrir notificaÃ§Ãµes"
           onClick={onNotificationsClick}
         >
           <Icon name="bell" className="h-5 w-5" />
           <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-white" />
         </button>
         <span className="hidden text-lg font-semibold sm:inline">
-          Olá, {student.name}!
+          OlÃ¡, {student.name}!
         </span>
         <button
           className="grid h-11 w-11 place-items-center overflow-hidden rounded-full border-2 border-white bg-neutral-950 text-sm font-bold shadow"
@@ -63,3 +63,4 @@ export function TopBar({
     </header>
   );
 }
+

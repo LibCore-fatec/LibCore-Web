@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { ActivityCallout } from "@/components/ui/activity-callout";
 import { libraryTabs } from "@/lib/mock-data";
 import type { LibraryTab } from "@/lib/types";
@@ -19,7 +19,7 @@ export function LibraryTabs({
       <div
         className="flex gap-1 overflow-x-auto border-b border-[var(--cps-border)]"
         role="tablist"
-        aria-label="Áreas da biblioteca"
+        aria-label="Ãreas da biblioteca"
       >
         {libraryTabs.map((tab) => (
           <button
@@ -44,3 +44,4 @@ export function LibraryTabs({
     </div>
   );
 }
+
