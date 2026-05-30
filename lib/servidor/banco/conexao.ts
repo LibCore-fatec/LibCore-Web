@@ -1,7 +1,6 @@
 import mysql, { type Pool, type ResultSetHeader, type RowDataPacket } from "mysql2/promise";
 
 declare global {
-  // eslint-disable-next-line no-var
   var poolLibCore: Pool | undefined;
 }
 
@@ -28,7 +27,7 @@ export function obterPool() {
 }
 
 export async function consultar<T extends RowDataPacket>(sql: string, parametros: Record<string, unknown> = {}) {
-  const [linhas] = await obterPool().execute<T[]>(sql, parametros);
+  const [linhas] = await obterPool().execute<T[]>(sql, parametros as never);
   return linhas;
 }
 
@@ -38,6 +37,6 @@ export async function consultarUm<T extends RowDataPacket>(sql: string, parametr
 }
 
 export async function executar(sql: string, parametros: Record<string, unknown> = {}) {
-  const [resultado] = await obterPool().execute<ResultSetHeader>(sql, parametros);
+  const [resultado] = await obterPool().execute<ResultSetHeader>(sql, parametros as never);
   return resultado;
 }
