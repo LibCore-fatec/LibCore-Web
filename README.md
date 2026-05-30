@@ -2,8 +2,6 @@
 
 ## Banco de dados Aiven MySQL
 
-Este repositório já inclui a configuração base para conectar e importar o schema no Aiven MySQL.
-
 ### Variáveis de ambiente
 
 Crie um arquivo `.env` local a partir do `.env.example`:
@@ -16,8 +14,6 @@ DB_USER=avnadmin
 DB_PASSWORD=sua_senha_do_aiven
 DB_SSL=true
 ```
-
-Nunca envie o arquivo `.env` para o GitHub.
 
 ### Importar o schema
 
