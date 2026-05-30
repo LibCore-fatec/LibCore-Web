@@ -10,6 +10,7 @@ export type SectionId =
   | "admin-reservations"
   | "admin-ticket-resolution"
   | "admin-alert-history"
+  | "admin-room"
   | "sair";
 
 export type LibraryTab = "acervo" | "historico" | "espacos" | "mapa" | "tickets";
@@ -68,7 +69,9 @@ export type Usuario = {
 export type Livro = {
   id_livro: number;
   rfid_livro: string;
+  etiqueta_rfid?: string;
   nome_livro: string;
+  autor_livro?: string | null;
   id_localizacao: number | null;
 };
 
@@ -101,6 +104,18 @@ export type CatalogBook = Livro & {
   status: CatalogBookStatus;
   statusLabel: "Disponível" | "Emprestado";
   locationLabel: string;
+};
+
+export type AdminRoomStatus = "ABERTA" | "FECHADA" | "MANUTENCAO";
+
+export type AdminRoom = {
+  id: number;
+  nome: string;
+  status_sala: AdminRoomStatus;
+  camera_url: string | null;
+  largura_planta: number | null;
+  altura_planta: number | null;
+  metadata: Record<string, unknown> | null;
 };
 
 export type LoanRecord = Transacao & {
