@@ -1,29 +1,29 @@
 import { Icon } from "@/components/icons";
 import { MetricCard } from "@/components/ui/metric-card";
-import { bookStatusFilters, categories } from "@/lib/mock-data";
+import { bookStatusFilters, setores } from "@/lib/mock-data";
 import type { BookStatusFilter } from "@/lib/types";
 
 type LibraryHeaderProps = {
   availableCount: number;
-  category: string;
   loanedCount: number;
   searchTerm: string;
+  setor: string;
   statusFilter: BookStatusFilter;
   ticketsCount: number;
-  onCategoryChange: (category: string) => void;
   onSearchChange: (value: string) => void;
+  onSetorChange: (setor: string) => void;
   onStatusFilterChange: (status: BookStatusFilter) => void;
 };
 
 export function LibraryHeader({
   availableCount,
-  category,
   loanedCount,
   searchTerm,
+  setor,
   statusFilter,
   ticketsCount,
-  onCategoryChange,
   onSearchChange,
+  onSetorChange,
   onStatusFilterChange,
 }: LibraryHeaderProps) {
   return (
@@ -33,8 +33,8 @@ export function LibraryHeader({
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-semibold">Acervo</h2>
             <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-              Consulte livros disponíveis e emprestados por título, autor,
-              categoria ou localização.
+              Consulte livros disponíveis e emprestados por nome, RFID, setor
+              ou localização.
             </p>
           </div>
 
@@ -46,7 +46,7 @@ export function LibraryHeader({
               />
               <input
                 className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--cps-text-muted)]"
-                placeholder="Buscar por título, autor ou localização"
+                placeholder="Buscar por nome, RFID ou localização"
                 value={searchTerm}
                 onChange={(event) => onSearchChange(event.target.value)}
               />
@@ -54,11 +54,11 @@ export function LibraryHeader({
 
             <select
               className="h-11 rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-layer)] px-3 text-sm text-[var(--cps-text)]"
-              value={category}
-              onChange={(event) => onCategoryChange(event.target.value)}
-              aria-label="Filtrar categoria"
+              value={setor}
+              onChange={(event) => onSetorChange(event.target.value)}
+              aria-label="Filtrar setor"
             >
-              {categories.map((item) => (
+              {setores.map((item) => (
                 <option key={item}>{item}</option>
               ))}
             </select>
@@ -72,7 +72,9 @@ export function LibraryHeader({
               aria-label="Filtrar disponibilidade"
             >
               {bookStatusFilters.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
               ))}
             </select>
           </div>

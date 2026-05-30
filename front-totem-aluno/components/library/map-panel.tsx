@@ -1,11 +1,11 @@
 import { Icon } from "@/components/icons";
 import { InfoBlock } from "@/components/ui/info-block";
-import type { Book } from "@/lib/types";
+import type { CatalogBook } from "@/lib/types";
 
 const corridors = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 type MapPanelProps = {
-  selectedBook: Book;
+  selectedBook: CatalogBook;
 };
 
 export function MapPanel({ selectedBook }: MapPanelProps) {
@@ -15,12 +15,12 @@ export function MapPanel({ selectedBook }: MapPanelProps) {
         <div className="border-b border-[var(--cps-border)] p-5">
           <h3 className="text-xl font-semibold">Mapa digital do acervo</h3>
           <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-            Localização atual baseada na etiqueta {selectedBook.rfid}.
+            Localização atual baseada na etiqueta {selectedBook.rfid_livro}.
           </p>
         </div>
         <div className="grid min-h-[430px] gap-4 p-5 md:grid-cols-4">
           {corridors.map((corridor) => {
-            const active = selectedBook.location.includes(`Corredor ${corridor}`);
+            const active = selectedBook.localizacao?.setor === corridor;
             return (
               <div
                 key={corridor}
@@ -51,14 +51,24 @@ export function MapPanel({ selectedBook }: MapPanelProps) {
         <p className="text-sm font-semibold text-[var(--cps-accent)]">
           Livro selecionado
         </p>
-        <h3 className="mt-1 text-2xl font-semibold">{selectedBook.title}</h3>
+        <h3 className="mt-1 text-2xl font-semibold">
+          {selectedBook.nome_livro}
+        </h3>
         <p className="mt-2 text-sm text-[var(--cps-text-muted)]">
-          {selectedBook.author}
+          ID do livro: {selectedBook.id_livro}
         </p>
         <div className="mt-5 space-y-4">
-          <InfoBlock label="Localização" value={selectedBook.location} icon="map" />
-          <InfoBlock label="Etiqueta RFID" value={selectedBook.rfid} icon="rfid" />
-          <InfoBlock label="Status" value={selectedBook.status} icon="check" />
+          <InfoBlock
+            label="Localização"
+            value={selectedBook.locationLabel}
+            icon="map"
+          />
+          <InfoBlock
+            label="Etiqueta RFID"
+            value={selectedBook.rfid_livro}
+            icon="rfid"
+          />
+          <InfoBlock label="Status" value={selectedBook.statusLabel} icon="check" />
         </div>
       </aside>
     </div>

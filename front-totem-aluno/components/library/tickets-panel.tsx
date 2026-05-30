@@ -1,3 +1,4 @@
+import { formatTicketStatus } from "@/lib/mock-data";
 import type { Ticket } from "@/lib/types";
 
 type TicketsPanelProps = {
@@ -40,18 +41,21 @@ export function TicketsPanel({
         <div className="mt-5 space-y-3">
           {tickets.map((ticket) => (
             <div
-              key={ticket.id}
+              key={ticket.id_ticket}
               className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="font-semibold">{ticket.title}</p>
+                  <p className="font-semibold">
+                    {ticket.descricao ?? ticket.tipo}
+                  </p>
                   <p className="mt-1 text-sm text-[var(--cps-text-muted)]">
-                    {ticket.updatedAt}
+                    {ticket.tipo} ·{" "}
+                    {new Date(ticket.data_criacao).toLocaleDateString("pt-BR")}
                   </p>
                 </div>
                 <span className="w-fit rounded-full bg-white/60 px-3 py-1 text-xs font-semibold text-[var(--cps-accent)]">
-                  {ticket.status}
+                  {formatTicketStatus(ticket.status)}
                 </span>
               </div>
             </div>

@@ -5,14 +5,14 @@ import { AppShell } from "@/components/layout/app-shell";
 import { SectionPlaceholder } from "@/components/layout/section-placeholder";
 import { LibraryContent } from "@/components/library/library-content";
 import {
-  books,
-  initialTickets,
+  catalogBooks,
+  tickets as initialTickets,
   navItems,
   studentProfile,
 } from "@/lib/mock-data";
 import type {
-  Book,
   BookStatusFilter,
+  CatalogBook,
   LibraryTab,
   SectionId,
   Ticket,
@@ -25,12 +25,12 @@ export function StudentDashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("Todas");
+  const [setor, setSetor] = useState("Todos");
   const [statusFilter, setStatusFilter] =
-    useState<BookStatusFilter>("Todos");
-  const [selectedBookId, setSelectedBookId] = useState("b1");
+    useState<BookStatusFilter>("TODOS");
+  const [selectedBookId, setSelectedBookId] = useState(1);
   const [reservedSpaceIds, setReservedSpaceIds] = useState<string[]>([]);
-  const [renewedLoanIds, setRenewedLoanIds] = useState<string[]>([]);
+  const [renewedLoanIds, setRenewedLoanIds] = useState<number[]>([]);
   const [ticketDescription, setTicketDescription] = useState("");
   const [tickets, setTickets] = useState<Ticket[]>(initialTickets);
   const [activity, setActivity] = useState(
@@ -38,30 +38,31 @@ export function StudentDashboard() {
   );
 
   const selectedBook =
-    books.find((book) => book.id === selectedBookId) ?? books[0];
+    catalogBooks.find((book) => book.id_livro === selectedBookId) ??
+    catalogBooks[0];
 
   const filteredBooks = useMemo(() => {
     const normalized = searchTerm.trim().toLowerCase();
 
-    return books.filter((book) => {
-      const matchesCategory = category === "Todas" || book.category === category;
+    return catalogBooks.filter((book) => {
+      const matchesSetor = setor === "Todos" || book.localizacao?.setor === setor;
       const matchesStatus =
-        statusFilter === "Todos" || book.status === statusFilter;
+        statusFilter === "TODOS" || book.status === statusFilter;
       const searchable =
-        `${book.title} ${book.author} ${book.category} ${book.location}`.toLowerCase();
+        `${book.nome_livro} ${book.rfid_livro} ${book.locationLabel}`.toLowerCase();
 
       return (
-        matchesCategory &&
+        matchesSetor &&
         matchesStatus &&
         (!normalized || searchable.includes(normalized))
       );
     });
-  }, [category, searchTerm, statusFilter]);
+  }, [searchTerm, setor, statusFilter]);
 
-  const availableCount = books.filter(
-    (book) => book.status === "Disponível",
+  const availableCount = catalogBooks.filter(
+    (book) => book.status === "DISPONIVEL",
   ).length;
-  const loanedCount = books.length - availableCount;
+  const loanedCount = catalogBooks.length - availableCount;
 
   function selectSection(sectionId: SectionId) {
     setActiveSection(sectionId);
@@ -82,10 +83,10 @@ export function StudentDashboard() {
     setActivity(`${label} aberto com conteúdo demonstrativo.`);
   }
 
-  function openMap(book: Book) {
-    setSelectedBookId(book.id);
+  function openMap(book: CatalogBook) {
+    setSelectedBookId(book.id_livro);
     setActiveTab("mapa");
-    setActivity(`Mapa atualizado para localizar "${book.title}".`);
+    setActivity(`Mapa atualizado para localizar "${book.nome_livro}".`);
   }
 
   function reserveSpace(spaceId: string, spaceName: string) {
@@ -98,7 +99,7 @@ export function StudentDashboard() {
     setActivity(`Reserva confirmada para ${spaceName}.`);
   }
 
-  function renewLoan(loanId: string, title: string) {
+  function renewLoan(loanId: number, title: string) {
     if (renewedLoanIds.includes(loanId)) {
       setActivity(`A renovação de "${title}" já foi solicitada.`);
       return;
@@ -118,10 +119,13 @@ export function StudentDashboard() {
 
     setTickets((current) => [
       {
-        id: `t${current.length + 1}`,
-        title: description,
-        status: "Aberto",
-        updatedAt: "Criado agora",
+        id_ticket: current.length + 1,
+        data_criacao: new Date().toISOString(),
+        data_finalizacao: null,
+        status: "ABERTO",
+        tipo: "GERAL",
+        descricao: description,
+        id_usuario: 1,
       },
       ...current,
     ]);
@@ -153,23 +157,23 @@ export function StudentDashboard() {
           activeTab={activeTab}
           activity={activity}
           availableCount={availableCount}
-          category={category}
           filteredBooks={filteredBooks}
           loanedCount={loanedCount}
           renewedLoanIds={renewedLoanIds}
           reservedSpaceIds={reservedSpaceIds}
           searchTerm={searchTerm}
           selectedBook={selectedBook}
+          setor={setor}
           statusFilter={statusFilter}
           ticketDescription={ticketDescription}
           tickets={tickets}
-          onCategoryChange={setCategory}
           onCreateTicket={createTicket}
           onOpenMap={openMap}
           onReserveSpace={reserveSpace}
           onRenewLoan={renewLoan}
           onSearchChange={setSearchTerm}
           onSelectBook={setSelectedBookId}
+          onSetorChange={setSetor}
           onStatusFilterChange={setStatusFilter}
           onTabChange={setActiveTab}
           onTicketDescriptionChange={setTicketDescription}

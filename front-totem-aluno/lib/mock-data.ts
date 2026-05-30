@@ -1,15 +1,34 @@
 import type {
-  Book,
+  BookStatusFilter,
+  CatalogBook,
   LibraryTabItem,
   LoanRecord,
+  LocalizacaoLivro,
+  Livro,
   NavItem,
   StudentProfile,
   StudySpace,
   Ticket,
+  TipoTransacao,
+  Transacao,
+  Usuario,
 } from "@/lib/types";
 
+export const usuarios: Usuario[] = [
+  {
+    id_usuario: 1,
+    nome_usuario: "João",
+    email_usuario: "joao.pereira@fatec.sp.gov.br",
+    cpf_usuario: "12345678901",
+    facial_usuario: null,
+    tipo_usuario: "LEITOR",
+  },
+];
+
+const currentUser = usuarios[0];
+
 export const studentProfile: StudentProfile = {
-  name: "João",
+  name: currentUser.nome_usuario,
   initials: "JP",
   course: "ADS",
   semester: "4º semestre",
@@ -35,110 +54,163 @@ export const libraryTabs: LibraryTabItem[] = [
   { id: "tickets", label: "Tickets", icon: "ticket" },
 ];
 
-export const books: Book[] = [
+export const localizacaoLivro: LocalizacaoLivro[] = [
+  { id_localizacao: 1, setor: "A", estante: "04", divisoria: "02", numero: 12 },
+  { id_localizacao: 2, setor: "B", estante: "02", divisoria: "01", numero: 8 },
+  { id_localizacao: 3, setor: "C", estante: "01", divisoria: "03", numero: 21 },
+  { id_localizacao: 4, setor: "A", estante: "07", divisoria: "04", numero: 4 },
+  { id_localizacao: 5, setor: "D", estante: "05", divisoria: "02", numero: 16 },
+  { id_localizacao: 6, setor: "E", estante: "03", divisoria: "01", numero: 9 },
+];
+
+export const livros: Livro[] = [
   {
-    id: "b1",
-    title: "Engenharia de Software Moderna",
-    author: "Marco Tulio Valente",
-    category: "Tecnologia",
-    status: "Disponível",
-    location: "Corredor A, Estante 04, Prateleira 02",
-    isbn: "978-65-990971-0-1",
-    rfid: "RFID-TEC-1842",
-    coverFrom: "#005c6e",
-    coverTo: "#48a2b4",
-    summary: "Arquitetura, testes, versionamento e práticas modernas.",
+    id_livro: 1,
+    rfid_livro: "RFID-TEC-1842",
+    nome_livro: "Engenharia de Software Moderna",
+    id_localizacao: 1,
   },
   {
-    id: "b2",
-    title: "Banco de Dados",
-    author: "Carlos A. Heuser",
-    category: "Tecnologia",
-    status: "Emprestado",
-    location: "Corredor B, Estante 02, Prateleira 01",
-    isbn: "978-85-352-4453-9",
-    rfid: "RFID-TEC-2145",
-    coverFrom: "#394150",
-    coverTo: "#7b8794",
-    summary: "Modelagem conceitual, relacional e SQL aplicado.",
+    id_livro: 2,
+    rfid_livro: "RFID-TEC-2145",
+    nome_livro: "Banco de Dados",
+    id_localizacao: 2,
   },
   {
-    id: "b3",
-    title: "Design Centrado no Usuário",
-    author: "Travis Lowdermilk",
-    category: "Design",
-    status: "Disponível",
-    location: "Corredor C, Estante 01, Prateleira 03",
-    isbn: "978-85-7522-376-1",
-    rfid: "RFID-DES-0931",
-    coverFrom: "#b20000",
-    coverTo: "#e35b5b",
-    summary: "Pesquisa, prototipação e validação de interfaces digitais.",
+    id_livro: 3,
+    rfid_livro: "RFID-DES-0931",
+    nome_livro: "Design Centrado no Usuário",
+    id_localizacao: 3,
   },
   {
-    id: "b4",
-    title: "Redes de Computadores",
-    author: "Andrew S. Tanenbaum",
-    category: "Redes",
-    status: "Disponível",
-    location: "Corredor A, Estante 07, Prateleira 04",
-    isbn: "978-85-430-1443-2",
-    rfid: "RFID-RED-7710",
-    coverFrom: "#365a68",
-    coverTo: "#1c2f3a",
-    summary: "Protocolos, camadas, segurança e comunicação em redes.",
+    id_livro: 4,
+    rfid_livro: "RFID-RED-7710",
+    nome_livro: "Redes de Computadores",
+    id_localizacao: 4,
   },
   {
-    id: "b5",
-    title: "Inteligência Artificial",
-    author: "Stuart Russell e Peter Norvig",
-    category: "Tecnologia",
-    status: "Emprestado",
-    location: "Corredor D, Estante 05, Prateleira 02",
-    isbn: "978-85-352-3701-6",
-    rfid: "RFID-IA-4098",
-    coverFrom: "#1f6f50",
-    coverTo: "#8bc7a6",
-    summary: "Agentes inteligentes, busca, aprendizado e inferência.",
+    id_livro: 5,
+    rfid_livro: "RFID-IA-4098",
+    nome_livro: "Inteligência Artificial",
+    id_localizacao: 5,
   },
   {
-    id: "b6",
-    title: "Gestão de Projetos",
-    author: "Harold Kerzner",
-    category: "Gestão",
-    status: "Disponível",
-    location: "Corredor E, Estante 03, Prateleira 01",
-    isbn: "978-85-221-1814-0",
-    rfid: "RFID-GES-6612",
-    coverFrom: "#775f22",
-    coverTo: "#d4b15f",
-    summary: "Planejamento, escopo, riscos e indicadores de projetos.",
+    id_livro: 6,
+    rfid_livro: "RFID-GES-6612",
+    nome_livro: "Gestão de Projetos",
+    id_localizacao: 6,
   },
 ];
 
-export const loanRecords: LoanRecord[] = [
+export const transacoes: Transacao[] = [
   {
-    id: "l1",
-    title: "Banco de Dados",
-    status: "Em andamento",
-    date: "Retirado em 23/05/2026",
-    due: "Devolução em 06/06/2026",
+    id_transacao: 1,
+    tipo: "EMPRESTIMO",
+    data: "2026-05-23T09:00:00",
+    id_usuario: 1,
+    id_livro: 2,
   },
   {
-    id: "l2",
-    title: "Algoritmos: Teoria e Prática",
-    status: "Devolvido",
-    date: "Retirado em 02/05/2026",
-    due: "Devolvido em 14/05/2026",
+    id_transacao: 2,
+    tipo: "DEVOLUCAO",
+    data: "2026-05-14T16:20:00",
+    id_usuario: 1,
+    id_livro: 4,
   },
   {
-    id: "l3",
-    title: "Comunicação Técnica",
-    status: "Multa quitada",
-    date: "Retirado em 12/04/2026",
-    due: "Atraso de 1 dia resolvido",
+    id_transacao: 3,
+    tipo: "RESERVA",
+    data: "2026-05-29T10:40:00",
+    id_usuario: 1,
+    id_livro: 5,
   },
 ];
+
+export const tickets: Ticket[] = [
+  {
+    id_ticket: 1,
+    data_criacao: "2026-05-30T08:32:00",
+    data_finalizacao: null,
+    status: "EM_ANDAMENTO",
+    tipo: "LOCALIZACAO",
+    descricao: "Livro de redes fora da prateleira indicada",
+    id_usuario: 1,
+  },
+  {
+    id_ticket: 2,
+    data_criacao: "2026-05-29T17:15:00",
+    data_finalizacao: null,
+    status: "ABERTO",
+    tipo: "RFID",
+    descricao: "Leitor RFID do totem 02 indisponível",
+    id_usuario: 1,
+  },
+];
+
+function getLocation(id_localizacao: number | null) {
+  return (
+    localizacaoLivro.find(
+      (localizacao) => localizacao.id_localizacao === id_localizacao,
+    ) ?? null
+  );
+}
+
+export function formatLocation(localizacao: LocalizacaoLivro | null) {
+  if (!localizacao) {
+    return "Localização não cadastrada";
+  }
+
+  return `Setor ${localizacao.setor}, Estante ${localizacao.estante}, Divisória ${localizacao.divisoria}, Nº ${localizacao.numero}`;
+}
+
+function getLatestTransaction(id_livro: number) {
+  return transacoes
+    .filter((transacao) => transacao.id_livro === id_livro)
+    .sort((a, b) => b.data.localeCompare(a.data))[0];
+}
+
+function getCatalogStatus(tipo?: TipoTransacao) {
+  return tipo === "EMPRESTIMO" || tipo === "RESERVA"
+    ? { status: "EMPRESTADO" as const, statusLabel: "Emprestado" as const }
+    : { status: "DISPONIVEL" as const, statusLabel: "Disponível" as const };
+}
+
+export const catalogBooks: CatalogBook[] = livros.map((livro) => {
+  const localizacao = getLocation(livro.id_localizacao);
+  const latestTransaction = getLatestTransaction(livro.id_livro);
+  const catalogStatus = getCatalogStatus(latestTransaction?.tipo);
+
+  return {
+    ...livro,
+    ...catalogStatus,
+    localizacao,
+    locationLabel: formatLocation(localizacao),
+  };
+});
+
+export const loanRecords: LoanRecord[] = transacoes
+  .filter((transacao) => transacao.id_usuario === currentUser.id_usuario)
+  .map((transacao) => {
+    const livro = livros.find((item) => item.id_livro === transacao.id_livro);
+    const statusByType = {
+      EMPRESTIMO: "Em andamento",
+      DEVOLUCAO: "Devolvido",
+      RENOVACAO: "Renovado",
+      RESERVA: "Reserva",
+    } as const;
+
+    return {
+      ...transacao,
+      livro_nome: livro?.nome_livro ?? "Livro não encontrado",
+      statusLabel: statusByType[transacao.tipo],
+      dateLabel: new Date(transacao.data).toLocaleDateString("pt-BR"),
+      dueLabel:
+        transacao.tipo === "EMPRESTIMO"
+          ? "Devolução em 06/06/2026"
+          : statusByType[transacao.tipo],
+    };
+  })
+  .sort((a, b) => b.data.localeCompare(a.data));
 
 export const studySpaces: StudySpace[] = [
   {
@@ -164,21 +236,27 @@ export const studySpaces: StudySpace[] = [
   },
 ];
 
-export const categories = ["Todas", "Tecnologia", "Design", "Redes", "Gestão"];
-
-export const bookStatusFilters = ["Todos", "Disponível", "Emprestado"] as const;
-
-export const initialTickets: Ticket[] = [
-  {
-    id: "t1",
-    title: "Livro de redes fora da prateleira indicada",
-    status: "Em análise",
-    updatedAt: "Atualizado hoje às 08:32",
-  },
-  {
-    id: "t2",
-    title: "Leitor RFID do totem 02 indisponível",
-    status: "Encaminhado",
-    updatedAt: "Atualizado ontem às 17:15",
-  },
+export const setores = [
+  "Todos",
+  ...Array.from(new Set(localizacaoLivro.map((localizacao) => localizacao.setor))),
 ];
+
+export const bookStatusFilters: {
+  label: string;
+  value: BookStatusFilter;
+}[] = [
+  { label: "Todos", value: "TODOS" },
+  { label: "Disponível", value: "DISPONIVEL" },
+  { label: "Emprestado", value: "EMPRESTADO" },
+];
+
+export function formatTicketStatus(status: Ticket["status"]) {
+  const labels = {
+    ABERTO: "Aberto",
+    EM_ANDAMENTO: "Em andamento",
+    FINALIZADO: "Finalizado",
+    CANCELADO: "Cancelado",
+  };
+
+  return labels[status];
+}

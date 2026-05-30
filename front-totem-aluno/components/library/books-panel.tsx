@@ -1,11 +1,11 @@
 import { Icon } from "@/components/icons";
 import { BookCard } from "@/components/library/book-card";
-import type { Book } from "@/lib/types";
+import type { CatalogBook } from "@/lib/types";
 
 type BooksPanelProps = {
-  filteredBooks: Book[];
-  onOpenMap: (book: Book) => void;
-  onSelectBook: (bookId: string) => void;
+  filteredBooks: CatalogBook[];
+  onOpenMap: (book: CatalogBook) => void;
+  onSelectBook: (bookId: number) => void;
 };
 
 export function BooksPanel({
@@ -34,7 +34,7 @@ export function BooksPanel({
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {filteredBooks.map((book) => (
         <BookCard
-          key={book.id}
+          key={book.id_livro}
           book={book}
           onOpenMap={onOpenMap}
           onSelect={onSelectBook}

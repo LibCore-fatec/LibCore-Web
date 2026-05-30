@@ -5,29 +5,34 @@ import { LibraryTabs } from "@/components/library/library-tabs";
 import { MapPanel } from "@/components/library/map-panel";
 import { SpacesPanel } from "@/components/library/spaces-panel";
 import { TicketsPanel } from "@/components/library/tickets-panel";
-import type { Book, BookStatusFilter, LibraryTab, Ticket } from "@/lib/types";
+import type {
+  BookStatusFilter,
+  CatalogBook,
+  LibraryTab,
+  Ticket,
+} from "@/lib/types";
 
 type LibraryContentProps = {
   activeTab: LibraryTab;
   activity: string;
   availableCount: number;
-  category: string;
-  filteredBooks: Book[];
+  filteredBooks: CatalogBook[];
   loanedCount: number;
-  renewedLoanIds: string[];
+  renewedLoanIds: number[];
   reservedSpaceIds: string[];
   searchTerm: string;
-  selectedBook: Book;
+  selectedBook: CatalogBook;
+  setor: string;
   statusFilter: BookStatusFilter;
   ticketDescription: string;
   tickets: Ticket[];
-  onCategoryChange: (category: string) => void;
   onCreateTicket: () => void;
-  onOpenMap: (book: Book) => void;
+  onOpenMap: (book: CatalogBook) => void;
   onReserveSpace: (spaceId: string, spaceName: string) => void;
-  onRenewLoan: (loanId: string, title: string) => void;
+  onRenewLoan: (loanId: number, title: string) => void;
   onSearchChange: (value: string) => void;
-  onSelectBook: (bookId: string) => void;
+  onSelectBook: (bookId: number) => void;
+  onSetorChange: (setor: string) => void;
   onStatusFilterChange: (status: BookStatusFilter) => void;
   onTabChange: (tab: LibraryTab) => void;
   onTicketDescriptionChange: (value: string) => void;
@@ -37,23 +42,23 @@ export function LibraryContent({
   activeTab,
   activity,
   availableCount,
-  category,
   filteredBooks,
   loanedCount,
   renewedLoanIds,
   reservedSpaceIds,
   searchTerm,
   selectedBook,
+  setor,
   statusFilter,
   ticketDescription,
   tickets,
-  onCategoryChange,
   onCreateTicket,
   onOpenMap,
   onReserveSpace,
   onRenewLoan,
   onSearchChange,
   onSelectBook,
+  onSetorChange,
   onStatusFilterChange,
   onTabChange,
   onTicketDescriptionChange,
@@ -62,13 +67,13 @@ export function LibraryContent({
     <section className="px-5 py-6 md:px-8 lg:px-10">
       <LibraryHeader
         availableCount={availableCount}
-        category={category}
         loanedCount={loanedCount}
         searchTerm={searchTerm}
+        setor={setor}
         statusFilter={statusFilter}
         ticketsCount={tickets.length}
-        onCategoryChange={onCategoryChange}
         onSearchChange={onSearchChange}
+        onSetorChange={onSetorChange}
         onStatusFilterChange={onStatusFilterChange}
       />
 
