@@ -180,6 +180,12 @@ export const livros: Livro[] = [
     nome_livro: "Gestão de Projetos",
     id_localizacao: 6,
   },
+  {
+    id_livro: 7,
+    rfid_livro: "53:fd:3a:38:63:00:01",
+    nome_livro: "Livro mockado para teste NFC",
+    id_localizacao: 1,
+  },
 ];
 
 export const transacoes: Transacao[] = [

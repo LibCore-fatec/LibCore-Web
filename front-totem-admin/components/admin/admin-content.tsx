@@ -81,6 +81,18 @@ export function AdminContent({
   const [bookTitle, setBookTitle] = useState("");
   const [bookAuthor, setBookAuthor] = useState("");
   const [bookSearch, setBookSearch] = useState("");
+  const [isSearchScanning, setIsSearchScanning] = useState(false);
+  const [bookSearchError, setBookSearchError] = useState("");
+  const [displayBooks, setDisplayBooks] = useState<CatalogBook[]>(catalogBooks);
+  const [selectedBook, setSelectedBook] = useState<CatalogBook | null>(null);
+  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [isEditingBook, setIsEditingBook] = useState(false);
+  const [editableBook, setEditableBook] = useState({
+    title: "",
+    rfid: "",
+    location: "",
+    status: "DISPONIVEL" as CatalogBook["status"],
+  });
   const [resolvedTicketIds, setResolvedTicketIds] = useState<number[]>([]);
   const [reservationStatus, setReservationStatus] = useState<
     Record<number, "CONFIRMADA" | "RECUSADA">
@@ -90,26 +102,116 @@ export function AdminContent({
     const normalized = bookSearch.trim().toLowerCase();
 
     if (!normalized) {
-      return catalogBooks;
+      return displayBooks;
     }
 
-    return catalogBooks.filter((book) =>
+    return displayBooks.filter((book) =>
       `${book.nome_livro} ${book.rfid_livro} ${book.locationLabel}`
         .toLowerCase()
         .includes(normalized),
     );
-  }, [bookSearch]);
+  }, [bookSearch, displayBooks]);
 
-  async function iniciarLeituraNFC() {
-    setMensagemErro("");
+  function openBookDetails(book: CatalogBook) {
+    setSelectedBook(book);
+    setEditableBook({
+      title: book.nome_livro,
+      rfid: book.rfid_livro,
+      location: book.locationLabel,
+      status: book.status,
+    });
+    setIsEditingBook(false);
+    setIsBookModalOpen(true);
+    setBookSearchError("");
+    onActivityChange(`Livro "${book.nome_livro}" localizado pela etiqueta RFID.`);
+  }
+
+  function openBookDetailsByRfid(rfid: string) {
+    const normalized = rfid.trim().toLowerCase();
+    const book = displayBooks.find(
+      (item) => item.rfid_livro.toLowerCase() === normalized,
+    );
+
+    if (!book) {
+      setBookSearchError("Nenhum livro foi encontrado para esta etiqueta RFID.");
+      onActivityChange(`Nenhum livro encontrado para a etiqueta ${rfid}.`);
+      return;
+    }
+
+    openBookDetails(book);
+  }
+
+  function handleBookSearchChange(value: string) {
+    setBookSearch(value);
+    const normalized = value.trim().toLowerCase();
+
+    if (!normalized) {
+      setBookSearchError("");
+      return;
+    }
+
+    const exactBook = displayBooks.find(
+      (book) => book.rfid_livro.toLowerCase() === normalized,
+    );
+
+    if (exactBook && selectedBook?.id_livro !== exactBook.id_livro) {
+      openBookDetails(exactBook);
+    }
+  }
+
+  function closeBookModal() {
+    setIsBookModalOpen(false);
+    setIsEditingBook(false);
+    setSelectedBook(null);
+  }
+
+  function saveBookEdit() {
+    if (!selectedBook) {
+      return;
+    }
+
+    const statusLabel =
+      editableBook.status === "DISPONIVEL" ? "Disponível" : "Emprestado";
+
+    const updatedBook: CatalogBook = {
+      ...selectedBook,
+      nome_livro: editableBook.title.trim() || selectedBook.nome_livro,
+      rfid_livro: editableBook.rfid.trim() || selectedBook.rfid_livro,
+      locationLabel: editableBook.location.trim() || selectedBook.locationLabel,
+      status: editableBook.status,
+      statusLabel,
+    };
+
+    setDisplayBooks((current) =>
+      current.map((book) =>
+        book.id_livro === selectedBook.id_livro ? updatedBook : book,
+      ),
+    );
+    setSelectedBook(updatedBook);
+    setBookSearch(updatedBook.rfid_livro);
+    setIsEditingBook(false);
+    onActivityChange(`Informações de "${updatedBook.nome_livro}" atualizadas.`);
+  }
+
+  async function iniciarLeituraNFC(target: "register" | "search" = "register") {
+    const setTargetError =
+      target === "register" ? setMensagemErro : setBookSearchError;
+    const setTargetScanning =
+      target === "register" ? setIsScanning : setIsSearchScanning;
+    const successMessage =
+      target === "register"
+        ? "Etiqueta RFID lida para cadastro."
+        : "Etiqueta RFID lida para busca.";
+
+    setTargetError("");
 
     if (!("NDEFReader" in window) || !window.NDEFReader) {
-      setMensagemErro("Seu dispositivo/navegador não suporta NFC.");
+      setTargetError("Seu dispositivo/navegador não suporta NFC.");
       return;
     }
 
     try {
-      setIsScanning(true);
+      setTargetScanning(true);
       onActivityChange("Aproxime a etiqueta RFID/NFC do celular.");
 
       const ndef = new window.NDEFReader();
@@ -119,24 +221,32 @@ export function AdminContent({
         const serialNumber = event.serialNumber;
 
         if (!serialNumber) {
-          setMensagemErro("Etiqueta lida, mas o ID não foi identificado.");
-          setIsScanning(false);
+          setTargetError("Etiqueta lida, mas o ID não foi identificado.");
+          setTargetScanning(false);
           return;
         }
 
-        setRfidTag(serialNumber);
-        setMensagemErro("");
-        setIsScanning(false);
-        onActivityChange(`Etiqueta RFID ${serialNumber} lida com sucesso.`);
+        if (target === "register") {
+          setRfidTag(serialNumber);
+        } else {
+          setBookSearch(serialNumber);
+          openBookDetailsByRfid(serialNumber);
+        }
+
+        setTargetError("");
+        setTargetScanning(false);
+        onActivityChange(`${successMessage} ID: ${serialNumber}`);
       };
 
       ndef.onreadingerror = () => {
-        setMensagemErro("Não foi possível ler a etiqueta. Tente novamente.");
-        setIsScanning(false);
+        setTargetError("Não foi possível ler a etiqueta. Tente novamente.");
+        setTargetScanning(false);
       };
     } catch {
-      setMensagemErro("Não foi possível iniciar a leitura NFC. Verifique as permissões e tente novamente.");
-      setIsScanning(false);
+      setTargetError(
+        "Não foi possível iniciar a leitura NFC. Verifique as permissões e tente novamente.",
+      );
+      setTargetScanning(false);
     }
   }
 
@@ -156,7 +266,7 @@ export function AdminContent({
   }
 
   function updateBook(book: CatalogBook) {
-    onActivityChange(`Informacoes de "${book.nome_livro}" abertas para edicao.`);
+    openBookDetails(book);
   }
 
   function setReservation(id: number, status: "CONFIRMADA" | "RECUSADA") {
@@ -223,7 +333,7 @@ export function AdminContent({
                     : "bg-[var(--cps-accent)] hover:opacity-90"
                 }`}
                 disabled={isScanning}
-                onClick={iniciarLeituraNFC}
+                onClick={() => iniciarLeituraNFC("register")}
                 type="button"
               >
                 {isScanning ? "Aproxime a tag..." : "Escanear"}
@@ -267,7 +377,7 @@ export function AdminContent({
           <div className="cps-card p-5">
             <h3 className="text-xl font-semibold">Ultimas etiquetas lidas</h3>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
-              {catalogBooks.slice(0, 4).map((book) => (
+              {displayBooks.slice(0, 4).map((book) => (
                 <div
                   className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4"
                   key={book.id_livro}
@@ -295,15 +405,35 @@ export function AdminContent({
                 Busque por título, RFID ou localização para editar o registro.
               </p>
             </div>
-            <label className="block text-sm font-semibold" htmlFor="book-search">
-              Buscar livro
+            <div className="w-full max-w-sm">
+              <label className="block text-sm font-semibold" htmlFor="book-search">
+                Buscar livro
+              </label>
               <input
-                className="mt-2 h-9 w-full min-w-72 rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
+                className="mt-2 h-9 w-full rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
                 id="book-search"
+                readOnly={isSearchScanning}
                 value={bookSearch}
-                onChange={(event) => setBookSearch(event.target.value)}
+                onChange={(event) => handleBookSearchChange(event.target.value)}
               />
-            </label>
+              <button
+                className={`mt-2 h-9 w-full rounded-md px-8 text-sm font-semibold text-white transition disabled:cursor-not-allowed ${
+                  isSearchScanning
+                    ? "animate-pulse bg-[var(--cps-brand)] opacity-85"
+                    : "bg-[var(--cps-accent)] hover:opacity-90"
+                }`}
+                disabled={isSearchScanning}
+                onClick={() => iniciarLeituraNFC("search")}
+                type="button"
+              >
+                {isSearchScanning ? "Aproxime a tag..." : "Escanear"}
+              </button>
+              {bookSearchError && (
+                <p className="mt-2 text-sm font-semibold text-red-700">
+                  {bookSearchError}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="mt-5 divide-y divide-[var(--cps-border)] overflow-hidden rounded-lg border border-[var(--cps-border)]">
@@ -456,6 +586,168 @@ export function AdminContent({
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {isBookModalOpen && selectedBook && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/62 px-4 py-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="book-details-title"
+        >
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-auto rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-layer)] p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-4 border-b border-[var(--cps-border)] pb-4">
+              <div>
+                <p className="text-sm font-semibold uppercase text-[var(--cps-accent)]">
+                  Livro localizado por RFID
+                </p>
+                <h3
+                  className="mt-1 text-2xl font-semibold text-[var(--cps-text)]"
+                  id="book-details-title"
+                >
+                  {selectedBook.nome_livro}
+                </h3>
+              </div>
+              <button
+                className="grid h-9 w-9 place-items-center rounded-md border border-[var(--cps-border-strong)] text-xl font-semibold"
+                onClick={closeBookModal}
+                type="button"
+                aria-label="Fechar detalhes do livro"
+              >
+                ×
+              </button>
+            </div>
+
+            {!isEditingBook ? (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4">
+                  <p className="text-xs font-semibold uppercase text-[var(--cps-text-muted)]">
+                    ID do livro
+                  </p>
+                  <p className="mt-1 font-semibold">{selectedBook.id_livro}</p>
+                </div>
+                <div className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4">
+                  <p className="text-xs font-semibold uppercase text-[var(--cps-text-muted)]">
+                    Etiqueta RFID
+                  </p>
+                  <p className="mt-1 font-semibold">{selectedBook.rfid_livro}</p>
+                </div>
+                <div className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4">
+                  <p className="text-xs font-semibold uppercase text-[var(--cps-text-muted)]">
+                    Título
+                  </p>
+                  <p className="mt-1 font-semibold">{selectedBook.nome_livro}</p>
+                </div>
+                <div className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4">
+                  <p className="text-xs font-semibold uppercase text-[var(--cps-text-muted)]">
+                    Status
+                  </p>
+                  <p className="mt-1 font-semibold">{selectedBook.statusLabel}</p>
+                </div>
+                <div className="rounded-lg border border-[var(--cps-border)] bg-[var(--cps-card-muted)] p-4 sm:col-span-2">
+                  <p className="text-xs font-semibold uppercase text-[var(--cps-text-muted)]">
+                    Localização
+                  </p>
+                  <p className="mt-1 font-semibold">
+                    {selectedBook.locationLabel}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <form
+                className="mt-5 grid gap-4"
+                onSubmit={(event) => event.preventDefault()}
+              >
+                <label className="block text-sm font-semibold" htmlFor="edit-title">
+                  Título
+                  <input
+                    className="mt-2 h-9 w-full rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
+                    id="edit-title"
+                    value={editableBook.title}
+                    onChange={(event) =>
+                      setEditableBook((current) => ({
+                        ...current,
+                        title: event.target.value,
+                      }))
+                    }
+                  />
+                </label>
+                <label className="block text-sm font-semibold" htmlFor="edit-rfid">
+                  Etiqueta RFID
+                  <input
+                    className="mt-2 h-9 w-full rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
+                    id="edit-rfid"
+                    value={editableBook.rfid}
+                    onChange={(event) =>
+                      setEditableBook((current) => ({
+                        ...current,
+                        rfid: event.target.value,
+                      }))
+                    }
+                  />
+                </label>
+                <label className="block text-sm font-semibold" htmlFor="edit-location">
+                  Localização
+                  <input
+                    className="mt-2 h-9 w-full rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
+                    id="edit-location"
+                    value={editableBook.location}
+                    onChange={(event) =>
+                      setEditableBook((current) => ({
+                        ...current,
+                        location: event.target.value,
+                      }))
+                    }
+                  />
+                </label>
+                <label className="block text-sm font-semibold" htmlFor="edit-status">
+                  Status
+                  <select
+                    className="mt-2 h-9 w-full rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
+                    id="edit-status"
+                    value={editableBook.status}
+                    onChange={(event) =>
+                      setEditableBook((current) => ({
+                        ...current,
+                        status: event.target.value as CatalogBook["status"],
+                      }))
+                    }
+                  >
+                    <option value="DISPONIVEL">Disponível</option>
+                    <option value="EMPRESTADO">Emprestado</option>
+                  </select>
+                </label>
+              </form>
+            )}
+
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <button
+                className="h-9 rounded-md border border-[var(--cps-border-strong)] px-8 text-sm font-semibold"
+                onClick={closeBookModal}
+                type="button"
+              >
+                Fechar
+              </button>
+              {isEditingBook ? (
+                <button
+                  className="h-9 rounded-md bg-[var(--cps-accent)] px-8 text-sm font-semibold text-white"
+                  onClick={saveBookEdit}
+                  type="button"
+                >
+                  Salvar alterações
+                </button>
+              ) : (
+                <button
+                  className="h-9 rounded-md bg-[var(--cps-accent)] px-8 text-sm font-semibold text-white"
+                  onClick={() => setIsEditingBook(true)}
+                  type="button"
+                >
+                  Editar informações
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

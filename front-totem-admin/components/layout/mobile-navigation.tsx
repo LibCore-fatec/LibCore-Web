@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@/components/icons";
 import { adminNavItems, navItems } from "@/lib/mock-data";
 import type { SectionId } from "@/lib/types";

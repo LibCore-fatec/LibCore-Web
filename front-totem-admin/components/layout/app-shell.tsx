@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { AppHero } from "@/components/layout/app-hero";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
