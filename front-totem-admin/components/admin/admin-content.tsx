@@ -17,6 +17,22 @@ type AdminContentProps = {
   onActivityChange: (message: string) => void;
 };
 
+type NDEFReadingEvent = Event & {
+  serialNumber?: string;
+};
+
+type NDEFReaderInstance = {
+  scan: () => Promise<void>;
+  onreading: ((event: NDEFReadingEvent) => void) | null;
+  onreadingerror: (() => void) | null;
+};
+
+declare global {
+  interface Window {
+    NDEFReader?: new () => NDEFReaderInstance;
+  }
+}
+
 const adminIds = new Set<SectionId>(adminNavItems.map((item) => item.id));
 
 function formatDateTime(value: string) {
@@ -60,6 +76,8 @@ export function AdminContent({
   const currentItem =
     adminNavItems.find((item) => item.id === section) ?? adminNavItems[0];
   const [rfidTag, setRfidTag] = useState("RFID-LIB-9034");
+  const [isScanning, setIsScanning] = useState(false);
+  const [mensagemErro, setMensagemErro] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const [bookAuthor, setBookAuthor] = useState("");
   const [bookSearch, setBookSearch] = useState("");
@@ -81,6 +99,46 @@ export function AdminContent({
         .includes(normalized),
     );
   }, [bookSearch]);
+
+  async function iniciarLeituraNFC() {
+    setMensagemErro("");
+
+    if (!("NDEFReader" in window) || !window.NDEFReader) {
+      setMensagemErro("Seu dispositivo/navegador não suporta NFC.");
+      return;
+    }
+
+    try {
+      setIsScanning(true);
+      onActivityChange("Aproxime a etiqueta RFID/NFC do celular.");
+
+      const ndef = new window.NDEFReader();
+      await ndef.scan();
+
+      ndef.onreading = (event) => {
+        const serialNumber = event.serialNumber;
+
+        if (!serialNumber) {
+          setMensagemErro("Etiqueta lida, mas o ID não foi identificado.");
+          setIsScanning(false);
+          return;
+        }
+
+        setRfidTag(serialNumber);
+        setMensagemErro("");
+        setIsScanning(false);
+        onActivityChange(`Etiqueta RFID ${serialNumber} lida com sucesso.`);
+      };
+
+      ndef.onreadingerror = () => {
+        setMensagemErro("Não foi possível ler a etiqueta. Tente novamente.");
+        setIsScanning(false);
+      };
+    } catch {
+      setMensagemErro("Não foi possível iniciar a leitura NFC. Verifique as permissões e tente novamente.");
+      setIsScanning(false);
+    }
+  }
 
   function registerBook() {
     const title = bookTitle.trim();
@@ -150,12 +208,32 @@ export function AdminContent({
             <label className="mt-5 block text-sm font-semibold" htmlFor="rfid-tag">
               Etiqueta RFID
             </label>
-            <input
-              className="mt-2 h-9 w-full rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none"
-              id="rfid-tag"
-              value={rfidTag}
-              onChange={(event) => setRfidTag(event.target.value)}
-            />
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+              <input
+                className="h-9 min-w-0 flex-1 rounded-sm border border-[var(--cps-border)] bg-[var(--cps-card-muted)] px-3 text-sm outline-none read-only:text-[var(--cps-text-muted)]"
+                id="rfid-tag"
+                readOnly={isScanning}
+                value={rfidTag}
+                onChange={(event) => setRfidTag(event.target.value)}
+              />
+              <button
+                className={`h-9 rounded-md px-8 text-sm font-semibold text-white transition disabled:cursor-not-allowed ${
+                  isScanning
+                    ? "animate-pulse bg-[var(--cps-brand)] opacity-85"
+                    : "bg-[var(--cps-accent)] hover:opacity-90"
+                }`}
+                disabled={isScanning}
+                onClick={iniciarLeituraNFC}
+                type="button"
+              >
+                {isScanning ? "Aproxime a tag..." : "Escanear"}
+              </button>
+            </div>
+            {mensagemErro && (
+              <p className="mt-2 text-sm font-semibold text-red-700">
+                {mensagemErro}
+              </p>
+            )}
 
             <label className="mt-4 block text-sm font-semibold" htmlFor="book-title">
               Título do livro
