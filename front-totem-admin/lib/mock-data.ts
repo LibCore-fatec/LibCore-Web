@@ -183,7 +183,7 @@ export const livros: Livro[] = [
   {
     id_livro: 7,
     rfid_livro: "53:fd:3a:38:63:00:01",
-    nome_livro: "Livro mockado para teste NFC",
+    nome_livro: "Livro 1",
     id_localizacao: 1,
   },
 ];
