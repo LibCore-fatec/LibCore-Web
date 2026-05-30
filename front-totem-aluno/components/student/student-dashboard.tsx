@@ -10,7 +10,13 @@ import {
   navItems,
   studentProfile,
 } from "@/lib/mock-data";
-import type { Book, LibraryTab, SectionId, Ticket } from "@/lib/types";
+import type {
+  Book,
+  BookStatusFilter,
+  LibraryTab,
+  SectionId,
+  Ticket,
+} from "@/lib/types";
 
 export function StudentDashboard() {
   const [activeSection, setActiveSection] =
@@ -20,8 +26,9 @@ export function StudentDashboard() {
   const [isDark, setIsDark] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("Todas");
+  const [statusFilter, setStatusFilter] =
+    useState<BookStatusFilter>("Todos");
   const [selectedBookId, setSelectedBookId] = useState("b1");
-  const [reservedBookIds, setReservedBookIds] = useState<string[]>([]);
   const [reservedSpaceIds, setReservedSpaceIds] = useState<string[]>([]);
   const [renewedLoanIds, setRenewedLoanIds] = useState<string[]>([]);
   const [ticketDescription, setTicketDescription] = useState("");
@@ -38,17 +45,23 @@ export function StudentDashboard() {
 
     return books.filter((book) => {
       const matchesCategory = category === "Todas" || book.category === category;
+      const matchesStatus =
+        statusFilter === "Todos" || book.status === statusFilter;
       const searchable =
         `${book.title} ${book.author} ${book.category} ${book.location}`.toLowerCase();
 
-      return matchesCategory && (!normalized || searchable.includes(normalized));
+      return (
+        matchesCategory &&
+        matchesStatus &&
+        (!normalized || searchable.includes(normalized))
+      );
     });
-  }, [category, searchTerm]);
+  }, [category, searchTerm, statusFilter]);
 
   const availableCount = books.filter(
-    (book) =>
-      book.status === "Disponível" && !reservedBookIds.includes(book.id),
+    (book) => book.status === "Disponível",
   ).length;
+  const loanedCount = books.length - availableCount;
 
   function selectSection(sectionId: SectionId) {
     setActiveSection(sectionId);
@@ -67,19 +80,6 @@ export function StudentDashboard() {
     }
 
     setActivity(`${label} aberto com conteúdo demonstrativo.`);
-  }
-
-  function reserveBook(book: Book) {
-    if (book.status !== "Disponível" || reservedBookIds.includes(book.id)) {
-      setActivity(`"${book.title}" não está disponível para nova reserva.`);
-      return;
-    }
-
-    setReservedBookIds((current) => [...current, book.id]);
-    setSelectedBookId(book.id);
-    setActivity(
-      `Reserva criada para "${book.title}". Retire no totem RFID até 18:00.`,
-    );
   }
 
   function openMap(book: Book) {
@@ -155,22 +155,22 @@ export function StudentDashboard() {
           availableCount={availableCount}
           category={category}
           filteredBooks={filteredBooks}
-          isReserved={(bookId) => reservedBookIds.includes(bookId)}
+          loanedCount={loanedCount}
           renewedLoanIds={renewedLoanIds}
-          reservedBookIds={reservedBookIds}
           reservedSpaceIds={reservedSpaceIds}
           searchTerm={searchTerm}
           selectedBook={selectedBook}
+          statusFilter={statusFilter}
           ticketDescription={ticketDescription}
           tickets={tickets}
           onCategoryChange={setCategory}
           onCreateTicket={createTicket}
           onOpenMap={openMap}
-          onReserveBook={reserveBook}
           onReserveSpace={reserveSpace}
           onRenewLoan={renewLoan}
           onSearchChange={setSearchTerm}
           onSelectBook={setSelectedBookId}
+          onStatusFilterChange={setStatusFilter}
           onTabChange={setActiveTab}
           onTicketDescriptionChange={setTicketDescription}
         />

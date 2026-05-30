@@ -41,7 +41,7 @@ export type IconName =
   | "ticket"
   | "user";
 
-export type BookStatus = "Disponível" | "Emprestado" | "Reservado";
+export type BookStatus = "Disponível" | "Emprestado";
 
 export type Book = {
   id: string;
@@ -93,6 +93,8 @@ export type LibraryTabItem = {
   label: string;
   icon: IconName;
 };
+
+export type BookStatusFilter = "Todos" | BookStatus;
 
 export type StudentProfile = {
   name: string;

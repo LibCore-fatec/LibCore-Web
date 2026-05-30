@@ -4,17 +4,13 @@ import type { Book } from "@/lib/types";
 
 type BooksPanelProps = {
   filteredBooks: Book[];
-  isReserved: (bookId: string) => boolean;
   onOpenMap: (book: Book) => void;
-  onReserveBook: (book: Book) => void;
   onSelectBook: (bookId: string) => void;
 };
 
 export function BooksPanel({
   filteredBooks,
-  isReserved,
   onOpenMap,
-  onReserveBook,
   onSelectBook,
 }: BooksPanelProps) {
   if (filteredBooks.length === 0) {
@@ -35,14 +31,12 @@ export function BooksPanel({
   }
 
   return (
-    <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {filteredBooks.map((book) => (
         <BookCard
           key={book.id}
           book={book}
-          reserved={isReserved(book.id)}
           onOpenMap={onOpenMap}
-          onReserve={onReserveBook}
           onSelect={onSelectBook}
         />
       ))}

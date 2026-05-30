@@ -5,7 +5,7 @@ import { LibraryTabs } from "@/components/library/library-tabs";
 import { MapPanel } from "@/components/library/map-panel";
 import { SpacesPanel } from "@/components/library/spaces-panel";
 import { TicketsPanel } from "@/components/library/tickets-panel";
-import type { Book, LibraryTab, Ticket } from "@/lib/types";
+import type { Book, BookStatusFilter, LibraryTab, Ticket } from "@/lib/types";
 
 type LibraryContentProps = {
   activeTab: LibraryTab;
@@ -13,22 +13,22 @@ type LibraryContentProps = {
   availableCount: number;
   category: string;
   filteredBooks: Book[];
+  loanedCount: number;
   renewedLoanIds: string[];
-  reservedBookIds: string[];
   reservedSpaceIds: string[];
   searchTerm: string;
   selectedBook: Book;
+  statusFilter: BookStatusFilter;
   ticketDescription: string;
   tickets: Ticket[];
-  isReserved: (bookId: string) => boolean;
   onCategoryChange: (category: string) => void;
   onCreateTicket: () => void;
   onOpenMap: (book: Book) => void;
-  onReserveBook: (book: Book) => void;
   onReserveSpace: (spaceId: string, spaceName: string) => void;
   onRenewLoan: (loanId: string, title: string) => void;
   onSearchChange: (value: string) => void;
   onSelectBook: (bookId: string) => void;
+  onStatusFilterChange: (status: BookStatusFilter) => void;
   onTabChange: (tab: LibraryTab) => void;
   onTicketDescriptionChange: (value: string) => void;
 };
@@ -39,22 +39,22 @@ export function LibraryContent({
   availableCount,
   category,
   filteredBooks,
+  loanedCount,
   renewedLoanIds,
-  reservedBookIds,
   reservedSpaceIds,
   searchTerm,
   selectedBook,
+  statusFilter,
   ticketDescription,
   tickets,
-  isReserved,
   onCategoryChange,
   onCreateTicket,
   onOpenMap,
-  onReserveBook,
   onReserveSpace,
   onRenewLoan,
   onSearchChange,
   onSelectBook,
+  onStatusFilterChange,
   onTabChange,
   onTicketDescriptionChange,
 }: LibraryContentProps) {
@@ -63,11 +63,13 @@ export function LibraryContent({
       <LibraryHeader
         availableCount={availableCount}
         category={category}
-        reservationsCount={reservedBookIds.length + reservedSpaceIds.length}
+        loanedCount={loanedCount}
         searchTerm={searchTerm}
+        statusFilter={statusFilter}
         ticketsCount={tickets.length}
         onCategoryChange={onCategoryChange}
         onSearchChange={onSearchChange}
+        onStatusFilterChange={onStatusFilterChange}
       />
 
       <LibraryTabs
@@ -79,9 +81,7 @@ export function LibraryContent({
       {activeTab === "acervo" && (
         <BooksPanel
           filteredBooks={filteredBooks}
-          isReserved={isReserved}
           onOpenMap={onOpenMap}
-          onReserveBook={onReserveBook}
           onSelectBook={onSelectBook}
         />
       )}

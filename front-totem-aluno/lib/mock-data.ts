@@ -93,7 +93,7 @@ export const books: Book[] = [
     title: "Inteligência Artificial",
     author: "Stuart Russell e Peter Norvig",
     category: "Tecnologia",
-    status: "Reservado",
+    status: "Emprestado",
     location: "Corredor D, Estante 05, Prateleira 02",
     isbn: "978-85-352-3701-6",
     rfid: "RFID-IA-4098",
@@ -165,6 +165,8 @@ export const studySpaces: StudySpace[] = [
 ];
 
 export const categories = ["Todas", "Tecnologia", "Design", "Redes", "Gestão"];
+
+export const bookStatusFilters = ["Todos", "Disponível", "Emprestado"] as const;
 
 export const initialTickets: Ticket[] = [
   {

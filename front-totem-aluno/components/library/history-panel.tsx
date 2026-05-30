@@ -55,7 +55,7 @@ export function HistoryPanel({
         <h3 className="text-xl font-semibold">Resumo</h3>
         <div className="mt-5 space-y-4">
           <InfoBlock label="Empréstimos ativos" value="1 livro" icon="book" />
-          <InfoBlock label="Multas pendentes" value="R$ 0,00" icon="check" />
+          <InfoBlock label="Multas pendentes" value="Qte 0.00" icon="check" />
           <InfoBlock
             label="Próxima devolução"
             value="06/06/2026"

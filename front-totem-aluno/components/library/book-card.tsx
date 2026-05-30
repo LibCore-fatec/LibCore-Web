@@ -1,100 +1,62 @@
-import type { CSSProperties } from "react";
 import { Icon } from "@/components/icons";
 import { InfoRow } from "@/components/ui/info-row";
 import type { Book } from "@/lib/types";
 
 type BookCardProps = {
   book: Book;
-  reserved: boolean;
   onOpenMap: (book: Book) => void;
-  onReserve: (book: Book) => void;
   onSelect: (bookId: string) => void;
 };
 
-export function BookCard({
-  book,
-  reserved,
-  onOpenMap,
-  onReserve,
-  onSelect,
-}: BookCardProps) {
-  const unavailable = book.status !== "Disponível" || reserved;
-  const status = reserved ? "Reservado por você" : book.status;
+export function BookCard({ book, onOpenMap, onSelect }: BookCardProps) {
+  const available = book.status === "Disponível";
 
   return (
-    <article className="cps-card overflow-hidden">
-      <button
-        className="book-cover flex h-44 w-full flex-col justify-between p-5 text-left text-white"
-        onClick={() => onSelect(book.id)}
-        style={
-          {
-            "--cover-from": book.coverFrom,
-            "--cover-to": book.coverTo,
-          } as CSSProperties
-        }
-        type="button"
-      >
-        <div className="relative z-10 flex items-center justify-between">
-          <span className="rounded-full bg-black/22 px-3 py-1 text-xs font-semibold">
+    <article className="cps-card flex min-h-56 flex-col justify-between p-4 transition hover:-translate-y-0.5 hover:border-[var(--cps-border-strong)] md:p-5">
+      <div className="space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <span className="rounded-sm bg-[var(--cps-card-muted)] px-2.5 py-1 text-xs font-semibold text-[var(--cps-text-muted)]">
             {book.category}
           </span>
-          <Icon name="rfid" className="h-5 w-5" />
+          <span
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
+              available
+                ? "bg-emerald-50 text-emerald-700"
+                : "bg-red-50 text-red-700"
+            }`}
+          >
+            {available ? "Disponível" : "Emprestado"}
+          </span>
         </div>
-        <div className="relative z-10">
-          <p className="text-xs uppercase tracking-[0.08em] opacity-80">
-            Biblioteca Fatec
-          </p>
-          <h3 className="mt-1 max-w-[18rem] text-2xl font-semibold leading-tight">
+
+        <button
+          className="block w-full text-left"
+          onClick={() => onSelect(book.id)}
+          type="button"
+        >
+          <h3 className="text-xl font-semibold leading-tight text-[var(--cps-text)]">
             {book.title}
           </h3>
-        </div>
-      </button>
-
-      <div className="space-y-4 p-5">
-        <div>
-          <p className="text-sm text-[var(--cps-text-muted)]">{book.author}</p>
-          <p className="mt-2 line-clamp-2 text-sm">{book.summary}</p>
-        </div>
+          <p className="mt-2 text-sm font-medium text-[var(--cps-text-muted)]">
+            {book.author}
+          </p>
+        </button>
 
         <div className="grid gap-2 text-sm text-[var(--cps-text-muted)]">
           <InfoRow icon="map" text={book.location} />
-          <InfoRow icon="rfid" text={`${book.rfid} · ISBN ${book.isbn}`} />
         </div>
+      </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--cps-border)] pt-4">
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${
-              unavailable
-                ? "bg-[var(--cps-card-muted)] text-[var(--cps-text-muted)]"
-                : "bg-[var(--cps-accent-soft)] text-[var(--cps-accent)]"
-            }`}
-          >
-            {status}
-          </span>
-
-          <div className="flex gap-2">
-            <button
-              className="grid h-9 w-9 place-items-center rounded-md border border-[var(--cps-border)] transition hover:bg-[var(--cps-card-muted)]"
-              onClick={() => onOpenMap(book)}
-              type="button"
-              aria-label={`Ver localização de ${book.title}`}
-            >
-              <Icon name="map" className="h-4 w-4" />
-            </button>
-            <button
-              className={`h-9 rounded-md px-4 text-sm font-semibold transition ${
-                unavailable
-                  ? "bg-[var(--cps-card-muted)] text-[var(--cps-text-muted)]"
-                  : "bg-[var(--cps-accent)] text-white hover:opacity-90"
-              }`}
-              onClick={() => onReserve(book)}
-              type="button"
-              disabled={unavailable}
-            >
-              {reserved ? "Reservado" : "Reservar"}
-            </button>
-          </div>
-        </div>
+      <div className="mt-5 flex items-center justify-between gap-3 border-t border-[var(--cps-border)] pt-4">
+        <InfoRow icon="rfid" text={book.rfid} />
+        <button
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-[var(--cps-border)] transition hover:bg-[var(--cps-card-muted)]"
+          onClick={() => onOpenMap(book)}
+          type="button"
+          aria-label={`Ver localização de ${book.title}`}
+        >
+          <Icon name="map" className="h-4 w-4" />
+        </button>
       </div>
     </article>
   );
