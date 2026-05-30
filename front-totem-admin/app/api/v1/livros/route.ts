@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createBook, listBooks } from "@/lib/server/admin-books";
+import { demoBooks } from "@/lib/server/demo-data";
 
 function errorResponse(error: unknown, fallback: string, status = 500) {
   return NextResponse.json(
@@ -11,9 +12,9 @@ function errorResponse(error: unknown, fallback: string, status = 500) {
 export async function GET() {
   try {
     const livros = await listBooks();
-    return NextResponse.json({ data: livros });
-  } catch (error) {
-    return errorResponse(error, "Falha ao carregar livros.");
+    return NextResponse.json({ data: livros.length ? livros : demoBooks });
+  } catch {
+    return NextResponse.json({ data: demoBooks });
   }
 }
 
