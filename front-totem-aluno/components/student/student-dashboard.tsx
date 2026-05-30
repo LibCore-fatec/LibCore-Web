@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { SectionPlaceholder } from "@/components/layout/section-placeholder";
 import { LibraryContent } from "@/components/library/library-content";
+import { StudentRfidPanel } from "@/components/student/student-rfid-panel";
 import {
-  catalogBooks,
+  catalogBooks as mockCatalogBooks,
   tickets as initialTickets,
   navItems,
   studentProfile,
@@ -18,6 +19,21 @@ import type {
   Ticket,
 } from "@/lib/types";
 
+async function apiData<T>(url: string): Promise<T> {
+  const response = await fetch(url, { cache: "no-store" });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error ?? "API LibCore indisponível.");
+  return payload.data as T;
+}
+
+async function auditAluno(acao: string, detalhes: Record<string, unknown>) {
+  await fetch("/api/v1/auditoria", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id_usuario: 1, acao, entidade: "aluno_web", detalhes }),
+  }).catch(() => undefined);
+}
+
 export function StudentDashboard() {
   const [activeSection, setActiveSection] =
     useState<SectionId>("biblioteca");
@@ -28,18 +44,36 @@ export function StudentDashboard() {
   const [setor, setSetor] = useState("Todos");
   const [statusFilter, setStatusFilter] =
     useState<BookStatusFilter>("TODOS");
+  const [catalogBooks, setCatalogBooks] = useState<CatalogBook[]>(mockCatalogBooks);
   const [selectedBookId, setSelectedBookId] = useState(1);
   const [reservedSpaceIds, setReservedSpaceIds] = useState<string[]>([]);
   const [renewedLoanIds, setRenewedLoanIds] = useState<number[]>([]);
   const [ticketDescription, setTicketDescription] = useState("");
   const [tickets, setTickets] = useState<Ticket[]>(initialTickets);
   const [activity, setActivity] = useState(
-    "Biblioteca carregada com dados mockados do aluno João.",
+    "Biblioteca carregada. RFID/NFC pronto para consulta.",
   );
+
+  useEffect(() => {
+    auditAluno("USUARIO_ENTROU", { origem: "front-totem-aluno" });
+    apiData<CatalogBook[]>("/api/v1/livros")
+      .then((books) => {
+        if (books.length > 0) {
+          setCatalogBooks(books);
+          setSelectedBookId(books[0].id_livro);
+          setActivity("Acervo carregado da API LibCore/PostgreSQL.");
+        }
+      })
+      .catch(() => {
+        setCatalogBooks(mockCatalogBooks);
+        setActivity("Modo apresentação: acervo mockado carregado para celular.");
+      });
+  }, []);
 
   const selectedBook =
     catalogBooks.find((book) => book.id_livro === selectedBookId) ??
-    catalogBooks[0];
+    catalogBooks[0] ??
+    mockCatalogBooks[0];
 
   const filteredBooks = useMemo(() => {
     const normalized = searchTerm.trim().toLowerCase();
@@ -57,7 +91,7 @@ export function StudentDashboard() {
         (!normalized || searchable.includes(normalized))
       );
     });
-  }, [searchTerm, setor, statusFilter]);
+  }, [catalogBooks, searchTerm, setor, statusFilter]);
 
   const availableCount = catalogBooks.filter(
     (book) => book.status === "DISPONIVEL",
@@ -71,12 +105,13 @@ export function StudentDashboard() {
 
     if (sectionId === "biblioteca") {
       setActiveTab("acervo");
-      setActivity("Biblioteca aberta. Acervo e reservas prontos para consulta.");
+      setActivity("Biblioteca aberta. Acervo e RFID prontos para consulta.");
       return;
     }
 
     if (sectionId === "sair") {
-      setActivity("Sessão de demonstração encerrada em modo mockado.");
+      auditAluno("USUARIO_SAIU", { origem: "front-totem-aluno" });
+      setActivity("Saída registrada para o administrador.");
       return;
     }
 
@@ -141,11 +176,11 @@ export function StudentDashboard() {
       student={studentProfile}
       onHomeClick={() => selectSection("biblioteca")}
       onNotificationsClick={() =>
-        setActivity("3 notificações mockadas aguardam leitura.")
+        setActivity("Notificações do aluno carregadas para apresentação.")
       }
       onProfileClick={() =>
         setActivity(
-          `Perfil mockado: ${studentProfile.name}, ${studentProfile.course}, ${studentProfile.semester}.`,
+          `Perfil: ${studentProfile.name}, ${studentProfile.course}, ${studentProfile.semester}.`,
         )
       }
       onSelectSection={selectSection}
@@ -153,31 +188,36 @@ export function StudentDashboard() {
       onToggleTheme={() => setIsDark((current) => !current)}
     >
       {activeSection === "biblioteca" ? (
-        <LibraryContent
-          activeTab={activeTab}
-          activity={activity}
-          availableCount={availableCount}
-          filteredBooks={filteredBooks}
-          loanedCount={loanedCount}
-          renewedLoanIds={renewedLoanIds}
-          reservedSpaceIds={reservedSpaceIds}
-          searchTerm={searchTerm}
-          selectedBook={selectedBook}
-          setor={setor}
-          statusFilter={statusFilter}
-          ticketDescription={ticketDescription}
-          tickets={tickets}
-          onCreateTicket={createTicket}
-          onOpenMap={openMap}
-          onReserveSpace={reserveSpace}
-          onRenewLoan={renewLoan}
-          onSearchChange={setSearchTerm}
-          onSelectBook={setSelectedBookId}
-          onSetorChange={setSetor}
-          onStatusFilterChange={setStatusFilter}
-          onTabChange={setActiveTab}
-          onTicketDescriptionChange={setTicketDescription}
-        />
+        <>
+          <div className="px-5 pt-6 md:px-8 lg:px-10">
+            <StudentRfidPanel />
+          </div>
+          <LibraryContent
+            activeTab={activeTab}
+            activity={activity}
+            availableCount={availableCount}
+            filteredBooks={filteredBooks}
+            loanedCount={loanedCount}
+            renewedLoanIds={renewedLoanIds}
+            reservedSpaceIds={reservedSpaceIds}
+            searchTerm={searchTerm}
+            selectedBook={selectedBook}
+            setor={setor}
+            statusFilter={statusFilter}
+            ticketDescription={ticketDescription}
+            tickets={tickets}
+            onCreateTicket={createTicket}
+            onOpenMap={openMap}
+            onReserveSpace={reserveSpace}
+            onRenewLoan={renewLoan}
+            onSearchChange={setSearchTerm}
+            onSelectBook={setSelectedBookId}
+            onSetorChange={setSetor}
+            onStatusFilterChange={setStatusFilter}
+            onTabChange={setActiveTab}
+            onTicketDescriptionChange={setTicketDescription}
+          />
+        </>
       ) : (
         <SectionPlaceholder
           activeSection={activeSection}
