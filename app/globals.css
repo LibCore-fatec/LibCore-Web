@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cps-red: #b40010;
+  --cps-sidebar: #2f4f5d;
+  --cps-ink: #263f4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--cps-ink);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.92), rgba(247,249,250,.92)),
+    repeating-linear-gradient(120deg, transparent 0 42px, rgba(47,79,93,.035) 42px 54px);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.card-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-cps-red/30 focus:ring-offset-2;
+}
