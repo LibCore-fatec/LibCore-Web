@@ -79,6 +79,12 @@ export const adminNavItems: AdminNavItem[] = [
     icon: "alert",
     description: "Visualizar alertas gerados pelos totens da biblioteca.",
   },
+  {
+    id: "admin-room",
+    label: "Sala, câmera e mapa",
+    icon: "room",
+    description: "Acompanhar sala de estudo, câmera e mapa operacional da biblioteca.",
+  },
 ];
 
 export const conectaCards = [

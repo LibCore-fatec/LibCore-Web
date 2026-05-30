@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAuditLog, listAuditLogs } from "@/lib/server/audit";
-import { demoLogs } from "@/lib/server/demo-data";
+import { createDemoLog, getDemoLogs } from "@/lib/server/demo-data";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -8,9 +8,9 @@ export async function GET(request: Request) {
 
   try {
     const logs = await listAuditLogs(Number.isFinite(limit) ? limit : 50);
-    return NextResponse.json({ data: logs.length ? logs : demoLogs });
+    return NextResponse.json({ data: logs.length ? logs : getDemoLogs(limit) });
   } catch {
-    return NextResponse.json({ data: demoLogs });
+    return NextResponse.json({ data: getDemoLogs(limit), mode: "demo" });
   }
 }
 
@@ -33,8 +33,15 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ data: log }, { status: 201 });
   } catch {
+    const log = createDemoLog({
+      id_usuario: body.id_usuario ? Number(body.id_usuario) : null,
+      acao,
+      entidade,
+      id_entidade: body.id_entidade ? Number(body.id_entidade) : null,
+      detalhes: body.detalhes ?? null,
+    });
     return NextResponse.json(
-      { data: { ...demoLogs[0], acao, entidade, detalhes: body.detalhes ?? null } },
+      { data: log, mode: "demo" },
       { status: 201 },
     );
   }

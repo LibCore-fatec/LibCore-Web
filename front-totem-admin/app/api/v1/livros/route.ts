@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createBook, listBooks } from "@/lib/server/admin-books";
-import { demoBooks } from "@/lib/server/demo-data";
+import { createDemoBook, createDemoLog, getDemoBooks } from "@/lib/server/demo-data";
 
 function errorResponse(error: unknown, fallback: string, status = 500) {
   return NextResponse.json(
@@ -12,26 +12,52 @@ function errorResponse(error: unknown, fallback: string, status = 500) {
 export async function GET() {
   try {
     const livros = await listBooks();
-    return NextResponse.json({ data: livros.length ? livros : demoBooks });
+    return NextResponse.json({ data: livros.length ? livros : getDemoBooks() });
   } catch {
-    return NextResponse.json({ data: demoBooks });
+    return NextResponse.json({ data: getDemoBooks(), mode: "demo" });
   }
 }
 
 export async function POST(request: Request) {
+  const body = await request.json().catch(() => ({}));
+  const etiqueta = String(body.etiqueta_rfid ?? body.rfid_livro ?? "").trim();
+  const titulo = String(body.nome_livro ?? "").trim();
+  const autor = body.autor_livro ? String(body.autor_livro).trim() : null;
+
+  if (!etiqueta || !titulo) {
+    return NextResponse.json(
+      { error: "etiqueta_rfid e nome_livro sao obrigatorios." },
+      { status: 400 },
+    );
+  }
+
   try {
-    const body = await request.json();
-    const etiqueta = String(body.etiqueta_rfid ?? body.rfid_livro ?? "").trim();
-    const titulo = String(body.nome_livro ?? "").trim();
-    const autor = body.autor_livro ? String(body.autor_livro).trim() : null;
-
-    if (!etiqueta || !titulo) {
-      return NextResponse.json({ error: "etiqueta_rfid e nome_livro são obrigatórios." }, { status: 400 });
-    }
-
-    const livro = await createBook({ etiqueta_rfid: etiqueta, nome_livro: titulo, autor_livro: autor });
+    const livro = await createBook({
+      etiqueta_rfid: etiqueta,
+      nome_livro: titulo,
+      autor_livro: autor,
+    });
     return NextResponse.json({ data: livro }, { status: 201 });
   } catch (error) {
-    return errorResponse(error, "Falha ao cadastrar livro.");
+    if (error instanceof Error && /duplicate|unique|23505/i.test(error.message)) {
+      return errorResponse(error, "Etiqueta RFID ja cadastrada.", 409);
+    }
+
+    const livro = createDemoBook({
+      etiqueta_rfid: etiqueta,
+      nome_livro: titulo,
+      autor_livro: autor,
+    });
+    createDemoLog({
+      acao: "CADASTRO_RFID_DEMO",
+      entidade: "livros",
+      id_entidade: livro.id_livro,
+      detalhes: {
+        etiqueta_rfid: etiqueta,
+        nome_livro: titulo,
+        motivo: "PostgreSQL indisponivel",
+      },
+    });
+    return NextResponse.json({ data: livro, mode: "demo" }, { status: 201 });
   }
 }

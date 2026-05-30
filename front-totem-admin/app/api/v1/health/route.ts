@@ -6,9 +6,14 @@ export async function GET() {
     await query("SELECT 1 AS ok");
     return NextResponse.json({ data: { api: "ok", postgres: "ok" } });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "PostgreSQL indisponível." },
-      { status: 500 },
-    );
+    return NextResponse.json({
+      data: {
+        api: "ok",
+        postgres: "offline",
+        fallback: "demo",
+        message: error instanceof Error ? error.message : "PostgreSQL indisponivel.",
+      },
+      mode: "demo",
+    });
   }
 }
