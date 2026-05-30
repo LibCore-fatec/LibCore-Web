@@ -72,7 +72,7 @@ export function SideNavigation({
                 ? "bg-white/14 shadow-[inset_4px_0_0_rgba(255,255,255,0.9)]"
                 : "hover:bg-white/9"
             }`}
-            onClick={() => onSelect("admin-livros")}
+            onClick={() => onSelect("admin-rfid-register")}
             type="button"
             aria-expanded={adminActive}
           >

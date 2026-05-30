@@ -5,12 +5,11 @@ export type SectionId =
   | "projetos"
   | "qte"
   | "praticas"
-  | "admin-livros"
-  | "admin-usuarios"
-  | "admin-tickets"
-  | "admin-rfid"
-  | "admin-localizacao"
-  | "admin-reservas"
+  | "admin-rfid-register"
+  | "admin-books-edit"
+  | "admin-reservations"
+  | "admin-ticket-resolution"
+  | "admin-alert-history"
   | "sair";
 
 export type LibraryTab = "acervo" | "historico" | "espacos" | "mapa" | "tickets";
@@ -128,7 +127,7 @@ export type NavItem = {
 };
 
 export type AdminNavItem = NavItem & {
-  tab?: LibraryTab;
+  description: string;
 };
 
 export type LibraryTabItem = {
@@ -145,4 +144,22 @@ export type StudentProfile = {
   course: string;
   semester: string;
   campus: string;
+};
+
+export type PendingReservation = {
+  id: number;
+  studentName: string;
+  course: string;
+  bookTitle: string;
+  requestedAt: string;
+  pickupWindow: string;
+};
+
+export type TotemAlert = {
+  id: number;
+  title: string;
+  source: string;
+  severity: "INFO" | "ATENCAO" | "CRITICO";
+  createdAt: string;
+  status: "NOVO" | "EM_ANALISE" | "RESOLVIDO";
 };

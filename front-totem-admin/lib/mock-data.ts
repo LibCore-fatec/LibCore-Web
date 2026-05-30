@@ -7,9 +7,11 @@ import type {
   Livro,
   AdminNavItem,
   NavItem,
+  PendingReservation,
   StudentProfile,
   StudySpace,
   Ticket,
+  TotemAlert,
   TipoTransacao,
   Transacao,
   Usuario,
@@ -47,12 +49,36 @@ export const navItems: NavItem[] = [
 ];
 
 export const adminNavItems: AdminNavItem[] = [
-  { id: "admin-livros", label: "Gestão de livros", icon: "book", tab: "acervo" },
-  { id: "admin-usuarios", label: "Gestão de usuários", icon: "user", tab: "historico" },
-  { id: "admin-tickets", label: "Gestão de tickets", icon: "ticket", tab: "tickets" },
-  { id: "admin-rfid", label: "Gestão de RFID", icon: "rfid", tab: "mapa" },
-  { id: "admin-localizacao", label: "Localização", icon: "map", tab: "mapa" },
-  { id: "admin-reservas", label: "Reservas", icon: "room", tab: "espacos" },
+  {
+    id: "admin-rfid-register",
+    label: "Registrar livro por RFID",
+    icon: "rfid",
+    description: "Cadastrar livro e vincular etiqueta RFID ao acervo.",
+  },
+  {
+    id: "admin-books-edit",
+    label: "Modificar livros",
+    icon: "book",
+    description: "Alterar dados de livros já cadastrados.",
+  },
+  {
+    id: "admin-reservations",
+    label: "Confirmar reservas",
+    icon: "calendar",
+    description: "Aprovar ou recusar pedidos de reserva dos alunos.",
+  },
+  {
+    id: "admin-ticket-resolution",
+    label: "Resolver tickets",
+    icon: "ticket",
+    description: "Receber reclamações dos alunos e registrar resoluções.",
+  },
+  {
+    id: "admin-alert-history",
+    label: "Histórico de alertas",
+    icon: "alert",
+    description: "Visualizar alertas gerados pelos totens da biblioteca.",
+  },
 ];
 
 export const conectaCards = [
@@ -198,6 +224,60 @@ export const tickets: Ticket[] = [
     tipo: "RFID",
     descricao: "Leitor RFID do totem 02 indisponível",
     id_usuario: 1,
+  },
+];
+
+export const pendingReservations: PendingReservation[] = [
+  {
+    id: 1,
+    studentName: "Marina Alves",
+    course: "ADS - 3º semestre",
+    bookTitle: "Inteligência Artificial",
+    requestedAt: "2026-05-30T09:15:00",
+    pickupWindow: "Hoje, 14:00-18:00",
+  },
+  {
+    id: 2,
+    studentName: "Rafael Souza",
+    course: "Logística - 2º semestre",
+    bookTitle: "Gestão de Projetos",
+    requestedAt: "2026-05-30T10:30:00",
+    pickupWindow: "Amanha, 08:00-12:00",
+  },
+  {
+    id: 3,
+    studentName: "Bianca Lima",
+    course: "ADS - 5º semestre",
+    bookTitle: "Banco de Dados",
+    requestedAt: "2026-05-29T16:05:00",
+    pickupWindow: "Hoje, 18:00-21:00",
+  },
+];
+
+export const totemAlerts: TotemAlert[] = [
+  {
+    id: 1,
+    title: "Leitor RFID com falha de sincronização",
+    source: "Totem 02 - Entrada principal",
+    severity: "CRITICO",
+    createdAt: "2026-05-30T11:42:00",
+    status: "NOVO",
+  },
+  {
+    id: 2,
+    title: "Livro devolvido sem localização confirmada",
+    source: "Totem 01 - Balcão autônomo",
+    severity: "ATENCAO",
+    createdAt: "2026-05-30T10:18:00",
+    status: "EM_ANALISE",
+  },
+  {
+    id: 3,
+    title: "Reconhecimento facial indisponível por 3 minutos",
+    source: "Totem 03 - Sala de estudos",
+    severity: "INFO",
+    createdAt: "2026-05-29T18:37:00",
+    status: "RESOLVIDO",
   },
 ];
 
