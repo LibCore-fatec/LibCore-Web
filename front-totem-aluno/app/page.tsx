@@ -15,7 +15,7 @@ type Book = {
 };
 
 const demoBooks: Book[] = [
-  { id_livro: 1, etiqueta_rfid: "53:fd:3a:38:63:00:01", nome_livro: "Livro 1", autor_livro: "LibCore", statusLabel: "Disponível", locationLabel: "Setor A · Estante 01 · Divisória 01 · Nº 1", setor: "A", estante: "01", divisoria: "01" },
+  { id_livro: 1, etiqueta_rfid: "53:fd:3a:38:63:00:01", nome_livro: "Inferno de Dante", autor_livro: "Dante Alighieri", statusLabel: "Disponível", locationLabel: "Setor A · Estante 01 · Divisória 01 · Nº 1", setor: "A", estante: "01", divisoria: "01" },
   { id_livro: 2, etiqueta_rfid: "RFID-TEC-1842", nome_livro: "Engenharia de Software Moderna", autor_livro: "Ian Sommerville", statusLabel: "Disponível", locationLabel: "Setor A · Estante 04 · Divisória 02 · Nº 12", setor: "A", estante: "04", divisoria: "02" },
   { id_livro: 3, etiqueta_rfid: "RFID-TEC-2145", nome_livro: "Banco de Dados", autor_livro: "Elmasri & Navathe", statusLabel: "Emprestado", locationLabel: "Setor B · Estante 02 · Divisória 01 · Nº 8", setor: "B", estante: "02", divisoria: "01" },
   { id_livro: 4, etiqueta_rfid: "RFID-IA-9001", nome_livro: "Inteligência Artificial", autor_livro: "Russell & Norvig", statusLabel: "Disponível", locationLabel: "Setor C · Estante 01 · Divisória 03 · Nº 21", setor: "C", estante: "01", divisoria: "03" },
