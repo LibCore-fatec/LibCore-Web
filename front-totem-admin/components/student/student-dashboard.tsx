@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ConectaHome } from "@/components/conecta/conecta-home";
 import { AppShell } from "@/components/layout/app-shell";
 import { SectionPlaceholder } from "@/components/layout/section-placeholder";
 import { LibraryContent } from "@/components/library/library-content";
 import {
+  adminNavItems,
   catalogBooks,
   tickets as initialTickets,
   navItems,
@@ -20,7 +22,7 @@ import type {
 
 export function StudentDashboard() {
   const [activeSection, setActiveSection] =
-    useState<SectionId>("biblioteca");
+    useState<SectionId>("academies");
   const [activeTab, setActiveTab] = useState<LibraryTab>("acervo");
   const [collapsed, setCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -67,11 +69,13 @@ export function StudentDashboard() {
   function selectSection(sectionId: SectionId) {
     setActiveSection(sectionId);
     const label =
-      navItems.find((item) => item.id === sectionId)?.label ?? "Biblioteca";
+      [...navItems, ...adminNavItems].find((item) => item.id === sectionId)
+        ?.label ?? "Conecta";
+    const adminItem = adminNavItems.find((item) => item.id === sectionId);
 
-    if (sectionId === "biblioteca") {
-      setActiveTab("acervo");
-      setActivity("Biblioteca aberta. Acervo e reservas prontos para consulta.");
+    if (adminItem) {
+      setActiveTab(adminItem.tab ?? "acervo");
+      setActivity(`${adminItem.label} aberto para edição administrativa.`);
       return;
     }
 
@@ -139,7 +143,7 @@ export function StudentDashboard() {
       collapsed={collapsed}
       isDark={isDark}
       student={studentProfile}
-      onHomeClick={() => selectSection("biblioteca")}
+      onHomeClick={() => selectSection("academies")}
       onNotificationsClick={() =>
         setActivity("3 notificações mockadas aguardam leitura.")
       }
@@ -152,7 +156,9 @@ export function StudentDashboard() {
       onToggleCollapsed={() => setCollapsed((current) => !current)}
       onToggleTheme={() => setIsDark((current) => !current)}
     >
-      {activeSection === "biblioteca" ? (
+      {activeSection === "academies" ? (
+        <ConectaHome />
+      ) : adminNavItems.some((item) => item.id === activeSection) ? (
         <LibraryContent
           activeTab={activeTab}
           activity={activity}

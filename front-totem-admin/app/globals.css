@@ -147,3 +147,21 @@ textarea:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 50%;
 }
+
+.conecta-poster::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    repeating-linear-gradient(135deg, rgba(244, 207, 0, 0.08) 0 2px, transparent 2px 18px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.3));
+}
+
+.conecta-poster::after {
+  position: absolute;
+  inset: 96px 0 auto;
+  height: 3px;
+  content: "";
+  background: #d2be00;
+  box-shadow: 0 0 16px rgba(244, 207, 0, 0.8);
+}

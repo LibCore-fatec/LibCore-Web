@@ -24,13 +24,9 @@ export function AppShell({
   children,
   collapsed,
   isDark,
-  student,
   onHomeClick,
-  onNotificationsClick,
-  onProfileClick,
   onSelectSection,
   onToggleCollapsed,
-  onToggleTheme,
 }: AppShellProps) {
   return (
     <div
@@ -38,12 +34,7 @@ export function AppShell({
       data-theme={isDark ? "dark" : "light"}
     >
       <TopBar
-        isDark={isDark}
-        student={student}
         onHomeClick={onHomeClick}
-        onNotificationsClick={onNotificationsClick}
-        onProfileClick={onProfileClick}
-        onToggleTheme={onToggleTheme}
       />
 
       <div className="flex min-h-[calc(100vh-70px)] bg-[var(--cps-base-layer)]">

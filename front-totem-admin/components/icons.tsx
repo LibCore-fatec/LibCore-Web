@@ -106,6 +106,15 @@ export function Icon({ name, className = "" }: IconProps) {
           <path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" />
         </svg>
       );
+    case "globe":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18" />
+          <path d="M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21" />
+          <path d="M12 3c-2.3 2.5-3.5 5.5-3.5 9S9.7 18.5 12 21" />
+        </svg>
+      );
     case "lightbulb":
       return (
         <svg {...common}>

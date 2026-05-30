@@ -5,6 +5,7 @@ import type {
   LoanRecord,
   LocalizacaoLivro,
   Livro,
+  AdminNavItem,
   NavItem,
   StudentProfile,
   StudySpace,
@@ -42,8 +43,61 @@ export const navItems: NavItem[] = [
   { id: "projetos", label: "Projetos", icon: "lightbulb", beta: true },
   { id: "qte", label: "QTE", icon: "academy", beta: true },
   { id: "praticas", label: "Práticas", icon: "terminal", beta: true },
-  { id: "biblioteca", label: "Biblioteca", icon: "book" },
   { id: "sair", label: "Sair", icon: "signOut" },
+];
+
+export const adminNavItems: AdminNavItem[] = [
+  { id: "admin-livros", label: "Gestão de livros", icon: "book", tab: "acervo" },
+  { id: "admin-usuarios", label: "Gestão de usuários", icon: "user", tab: "historico" },
+  { id: "admin-tickets", label: "Gestão de tickets", icon: "ticket", tab: "tickets" },
+  { id: "admin-rfid", label: "Gestão de RFID", icon: "rfid", tab: "mapa" },
+  { id: "admin-localizacao", label: "Localização", icon: "map", tab: "mapa" },
+  { id: "admin-reservas", label: "Reservas", icon: "room", tab: "espacos" },
+];
+
+export const conectaCards = [
+  {
+    id: 1,
+    title: "Workshop FTX - GitHub no desenvolvimento de produtos",
+    date: "29/05 das 19:00 as 22:00",
+    author: "Giovana Albanes",
+    tag: "FINALIZADO",
+  },
+  {
+    id: 2,
+    title: "Workshop FTX - Ética em inteligência artificial",
+    date: "29/05 das 19:00 as 22:00",
+    author: "Gustavo Kletelinger",
+    tag: "FINALIZADO",
+  },
+  {
+    id: 3,
+    title: "Workshop FTX - Fundamentos no desenvolvimento de games",
+    date: "29/05 das 19:00 as 22:00",
+    author: "Raphael Pedretti",
+    tag: "FINALIZADO",
+  },
+  {
+    id: 4,
+    title: "Workshop FTX - Python para iniciantes",
+    date: "29/05 das 19:00 as 22:00",
+    author: "Ana Kunzendorff",
+    tag: "FINALIZADO",
+  },
+  {
+    id: 5,
+    title: "FTX 2026",
+    date: "de 28/05 a 30/05 das 19:00 as 22:00",
+    author: "Fatec Registro",
+    tag: "FINALIZADO",
+  },
+  {
+    id: 6,
+    title: "Workshop FTX - IoT com MQTT e fluxos Node-RED",
+    date: "28/05 das 19:00 as 22:00",
+    author: "Isabela Chaves",
+    tag: "FINALIZADO",
+  },
 ];
 
 export const libraryTabs: LibraryTabItem[] = [

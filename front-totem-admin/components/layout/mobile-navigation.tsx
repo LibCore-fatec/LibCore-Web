@@ -1,5 +1,5 @@
 import { Icon } from "@/components/icons";
-import { navItems } from "@/lib/mock-data";
+import { adminNavItems, navItems } from "@/lib/mock-data";
 import type { SectionId } from "@/lib/types";
 
 type MobileNavigationProps = {
@@ -14,7 +14,7 @@ export function MobileNavigation({
   return (
     <div className="border-b border-[var(--cps-border)] bg-[var(--cps-sidebar)] px-3 py-3 md:hidden">
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {navItems.map((item) => (
+        {[...navItems.filter((item) => item.id !== "sair"), ...adminNavItems, ...navItems.filter((item) => item.id === "sair")].map((item) => (
           <button
             key={item.id}
             className={`flex h-10 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-semibold text-white ${

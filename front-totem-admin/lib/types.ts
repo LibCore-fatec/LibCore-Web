@@ -5,7 +5,12 @@ export type SectionId =
   | "projetos"
   | "qte"
   | "praticas"
-  | "biblioteca"
+  | "admin-livros"
+  | "admin-usuarios"
+  | "admin-tickets"
+  | "admin-rfid"
+  | "admin-localizacao"
+  | "admin-reservas"
   | "sair";
 
 export type LibraryTab = "acervo" | "historico" | "espacos" | "mapa" | "tickets";
@@ -24,6 +29,7 @@ export type IconName =
   | "chevronRight"
   | "clock"
   | "external"
+  | "globe"
   | "home"
   | "lightbulb"
   | "map"
@@ -119,6 +125,10 @@ export type NavItem = {
   icon: IconName;
   beta?: boolean;
   external?: boolean;
+};
+
+export type AdminNavItem = NavItem & {
+  tab?: LibraryTab;
 };
 
 export type LibraryTabItem = {

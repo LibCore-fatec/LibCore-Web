@@ -1,5 +1,5 @@
 import { InfoBlock } from "@/components/ui/info-block";
-import { navItems } from "@/lib/mock-data";
+import { adminNavItems, navItems } from "@/lib/mock-data";
 import type { SectionId } from "@/lib/types";
 
 type SectionPlaceholderProps = {
@@ -12,7 +12,8 @@ export function SectionPlaceholder({
   activity,
 }: SectionPlaceholderProps) {
   const label =
-    navItems.find((item) => item.id === activeSection)?.label ?? "Conecta";
+    [...navItems, ...adminNavItems].find((item) => item.id === activeSection)
+      ?.label ?? "Conecta";
 
   return (
     <section className="px-5 py-6 md:px-8 lg:px-10">
