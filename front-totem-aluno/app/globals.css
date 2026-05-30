@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f3f3f3;
+  --foreground: #202020;
+  --cps-brand: #b20000;
+  --cps-brand-strong: #8b0000;
+  --cps-accent: #005c6e;
+  --cps-accent-soft: #e7f5f7;
+  --cps-sidebar: #365a68;
+  --cps-sidebar-strong: #2f5060;
+  --cps-font:
+    "Roboto Flex", "Segoe UI", Verdana, Arial, Helvetica, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cps-brand: var(--cps-brand);
+  --color-cps-accent: var(--cps-accent);
+  --font-sans: var(--cps-font);
+  --breakpoint-xs: 380px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--background);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--cps-font);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--cps-accent), white 18%);
+  outline-offset: 2px;
+}
+
+.student-shell {
+  --cps-base-layer: #f3f3f3;
+  --cps-content-layer: rgba(255, 255, 255, 0.7);
+  --cps-card-layer: rgba(255, 255, 255, 0.94);
+  --cps-card-muted: rgba(0, 0, 0, 0.035);
+  --cps-border: rgba(0, 0, 0, 0.0578);
+  --cps-border-strong: rgba(0, 0, 0, 0.11);
+  --cps-text: #243845;
+  --cps-text-muted: #697782;
+  --cps-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+  background: var(--cps-base-layer);
+  color: var(--cps-text);
+}
+
+.student-shell[data-theme="dark"] {
+  --cps-base-layer: #202020;
+  --cps-content-layer: rgba(36, 36, 36, 0.78);
+  --cps-card-layer: rgba(45, 45, 45, 0.94);
+  --cps-card-muted: rgba(255, 255, 255, 0.06);
+  --cps-border: rgba(255, 255, 255, 0.12);
+  --cps-border-strong: rgba(255, 255, 255, 0.2);
+  --cps-text: #f5f5f5;
+  --cps-text-muted: #c5cbd0;
+  --cps-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.34);
+}
+
+.cps-content-pattern {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.58) 0 2px, transparent 2px 38px),
+    linear-gradient(135deg, transparent 0 48%, rgba(255, 255, 255, 0.46) 48% 50%, transparent 50%),
+    var(--cps-content-layer);
+  background-size:
+    96px 96px,
+    180px 180px,
+    auto;
+}
+
+.student-shell[data-theme="dark"] .cps-content-pattern {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055) 0 2px, transparent 2px 38px),
+    linear-gradient(135deg, transparent 0 48%, rgba(255, 255, 255, 0.05) 48% 50%, transparent 50%),
+    var(--cps-content-layer);
+  background-size:
+    96px 96px,
+    180px 180px,
+    auto;
+}
+
+.cps-card {
+  border: 1px solid var(--cps-border);
+  border-radius: 8px;
+  background: var(--cps-card-layer);
+  box-shadow: var(--cps-shadow);
+}
+
+.cps-inset {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.09);
+}
+
+.book-cover {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(135deg, var(--cover-from), var(--cover-to));
+}
+
+.book-cover::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0 1px, transparent 1px 14px),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.26));
+  opacity: 0.64;
+}
+
+.book-cover::after {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 74px;
+  height: 74px;
+  content: "";
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+}
