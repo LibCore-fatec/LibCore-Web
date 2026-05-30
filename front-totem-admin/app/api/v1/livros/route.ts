@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createBook, listBooks } from "@/lib/server/admin-books";
+import { ensureLocalSchema } from "@/lib/server/bootstrap";
 
 function errorResponse(error: unknown, fallback: string, status = 500) {
   return NextResponse.json(
@@ -10,6 +11,7 @@ function errorResponse(error: unknown, fallback: string, status = 500) {
 
 export async function GET() {
   try {
+    await ensureLocalSchema();
     const livros = await listBooks();
     return NextResponse.json({ data: livros });
   } catch (error) {
@@ -19,6 +21,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    await ensureLocalSchema();
     const body = await request.json();
     const etiqueta = String(body.etiqueta_rfid ?? body.rfid_livro ?? "").trim();
     const titulo = String(body.nome_livro ?? "").trim();
