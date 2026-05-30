@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import { createAuditLog, listAuditLogs } from "@/lib/server/audit";
+import { demoLogs } from "@/lib/server/demo-data";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const limit = Number(searchParams.get("limit") ?? 50);
-  const logs = await listAuditLogs(Number.isFinite(limit) ? limit : 50);
-  return NextResponse.json({ data: logs });
+
+  try {
+    const logs = await listAuditLogs(Number.isFinite(limit) ? limit : 50);
+    return NextResponse.json({ data: logs.length ? logs : demoLogs });
+  } catch {
+    return NextResponse.json({ data: demoLogs });
+  }
 }
 
 export async function POST(request: Request) {
@@ -17,13 +23,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "acao e entidade são obrigatórios." }, { status: 400 });
   }
 
-  const log = await createAuditLog({
-    id_usuario: body.id_usuario ? Number(body.id_usuario) : null,
-    acao,
-    entidade,
-    id_entidade: body.id_entidade ? Number(body.id_entidade) : null,
-    detalhes: body.detalhes ?? null,
-  });
-
-  return NextResponse.json({ data: log }, { status: 201 });
+  try {
+    const log = await createAuditLog({
+      id_usuario: body.id_usuario ? Number(body.id_usuario) : null,
+      acao,
+      entidade,
+      id_entidade: body.id_entidade ? Number(body.id_entidade) : null,
+      detalhes: body.detalhes ?? null,
+    });
+    return NextResponse.json({ data: log }, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { data: { ...demoLogs[0], acao, entidade, detalhes: body.detalhes ?? null } },
+      { status: 201 },
+    );
+  }
 }

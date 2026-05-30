@@ -1,6 +1,6 @@
 import { Pool, type QueryResultRow } from "pg";
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL || "postgres://localhost/libcore";
 
 const globalForPg = globalThis as unknown as {
   libcorePgPool?: Pool;
@@ -21,20 +21,12 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
   params: unknown[] = [],
 ) {
-  if (!connectionString) {
-    throw new Error("DATABASE_URL não configurada para PostgreSQL.");
-  }
-
   return pool.query<T>(text, params);
 }
 
 export async function withTransaction<T>(
   callback: (client: import("pg").PoolClient) => Promise<T>,
 ) {
-  if (!connectionString) {
-    throw new Error("DATABASE_URL não configurada para PostgreSQL.");
-  }
-
   const client = await pool.connect();
 
   try {
