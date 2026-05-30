@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 
 type ActivityCalloutProps = {
   message: string;
@@ -12,3 +12,4 @@ export function ActivityCallout({ message }: ActivityCalloutProps) {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { BookCard } from "@/components/library/book-card";
 import type { CatalogBook } from "@/lib/types";
 
@@ -43,3 +43,4 @@ export function BooksPanel({
     </div>
   );
 }
+

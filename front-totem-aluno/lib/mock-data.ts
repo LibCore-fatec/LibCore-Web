@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   BookStatusFilter,
   CatalogBook,
   LibraryTabItem,
@@ -17,7 +17,7 @@ import type {
 export const usuarios: Usuario[] = [
   {
     id_usuario: 1,
-    nome_usuario: "João",
+    nome_usuario: "JoÃ£o",
     email_usuario: "joao.pereira@fatec.sp.gov.br",
     cpf_usuario: "12345678901",
     facial_usuario: null,
@@ -31,25 +31,25 @@ export const studentProfile: StudentProfile = {
   name: currentUser.nome_usuario,
   initials: "JP",
   course: "ADS",
-  semester: "4º semestre",
+  semester: "4Âº semestre",
   campus: "Fatec Registro",
 };
 
 export const navItems: NavItem[] = [
   { id: "academies", label: "Academies", icon: "academy", external: true },
   { id: "eventos", label: "Eventos", icon: "calendar" },
-  { id: "extensao", label: "Extensão", icon: "spark" },
+  { id: "extensao", label: "ExtensÃ£o", icon: "spark" },
   { id: "projetos", label: "Projetos", icon: "lightbulb", beta: true },
   { id: "qte", label: "QTE", icon: "academy", beta: true },
-  { id: "praticas", label: "Práticas", icon: "terminal", beta: true },
+  { id: "praticas", label: "PrÃ¡ticas", icon: "terminal", beta: true },
   { id: "biblioteca", label: "Biblioteca", icon: "book" },
   { id: "sair", label: "Sair", icon: "signOut" },
 ];
 
 export const libraryTabs: LibraryTabItem[] = [
   { id: "acervo", label: "Acervo", icon: "bookSearch" },
-  { id: "historico", label: "Histórico", icon: "clock" },
-  { id: "espacos", label: "Espaços", icon: "room" },
+  { id: "historico", label: "HistÃ³rico", icon: "clock" },
+  { id: "espacos", label: "EspaÃ§os", icon: "room" },
   { id: "mapa", label: "Mapa", icon: "map" },
   { id: "tickets", label: "Tickets", icon: "ticket" },
 ];
@@ -66,38 +66,38 @@ export const localizacaoLivro: LocalizacaoLivro[] = [
 export const livros: Livro[] = [
   {
     id_livro: 1,
-    rfid_livro: "RFID-TEC-1842",
+    etiqueta_rfid: "RFID-TEC-1842",
     nome_livro: "Engenharia de Software Moderna",
     id_localizacao: 1,
   },
   {
     id_livro: 2,
-    rfid_livro: "RFID-TEC-2145",
+    etiqueta_rfid: "RFID-TEC-2145",
     nome_livro: "Banco de Dados",
     id_localizacao: 2,
   },
   {
     id_livro: 3,
-    rfid_livro: "RFID-DES-0931",
-    nome_livro: "Design Centrado no Usuário",
+    etiqueta_rfid: "RFID-DES-0931",
+    nome_livro: "Design Centrado no UsuÃ¡rio",
     id_localizacao: 3,
   },
   {
     id_livro: 4,
-    rfid_livro: "RFID-RED-7710",
+    etiqueta_rfid: "RFID-RED-7710",
     nome_livro: "Redes de Computadores",
     id_localizacao: 4,
   },
   {
     id_livro: 5,
-    rfid_livro: "RFID-IA-4098",
-    nome_livro: "Inteligência Artificial",
+    etiqueta_rfid: "RFID-IA-4098",
+    nome_livro: "InteligÃªncia Artificial",
     id_localizacao: 5,
   },
   {
     id_livro: 6,
-    rfid_livro: "RFID-GES-6612",
-    nome_livro: "Gestão de Projetos",
+    etiqueta_rfid: "RFID-GES-6612",
+    nome_livro: "GestÃ£o de Projetos",
     id_localizacao: 6,
   },
 ];
@@ -142,7 +142,7 @@ export const tickets: Ticket[] = [
     data_finalizacao: null,
     status: "ABERTO",
     tipo: "RFID",
-    descricao: "Leitor RFID do totem 02 indisponível",
+    descricao: "Leitor RFID do totem 02 indisponÃ­vel",
     id_usuario: 1,
   },
 ];
@@ -157,10 +157,10 @@ function getLocation(id_localizacao: number | null) {
 
 export function formatLocation(localizacao: LocalizacaoLivro | null) {
   if (!localizacao) {
-    return "Localização não cadastrada";
+    return "LocalizaÃ§Ã£o nÃ£o cadastrada";
   }
 
-  return `Setor ${localizacao.setor}, Estante ${localizacao.estante}, Divisória ${localizacao.divisoria}, Nº ${localizacao.numero}`;
+  return `Setor ${localizacao.setor}, Estante ${localizacao.estante}, DivisÃ³ria ${localizacao.divisoria}, NÂº ${localizacao.numero}`;
 }
 
 function getLatestTransaction(id_livro: number) {
@@ -172,7 +172,7 @@ function getLatestTransaction(id_livro: number) {
 function getCatalogStatus(tipo?: TipoTransacao) {
   return tipo === "EMPRESTIMO" || tipo === "RESERVA"
     ? { status: "EMPRESTADO" as const, statusLabel: "Emprestado" as const }
-    : { status: "DISPONIVEL" as const, statusLabel: "Disponível" as const };
+    : { status: "DISPONIVEL" as const, statusLabel: "DisponÃ­vel" as const };
 }
 
 export const catalogBooks: CatalogBook[] = livros.map((livro) => {
@@ -201,12 +201,12 @@ export const loanRecords: LoanRecord[] = transacoes
 
     return {
       ...transacao,
-      livro_nome: livro?.nome_livro ?? "Livro não encontrado",
+      livro_nome: livro?.nome_livro ?? "Livro nÃ£o encontrado",
       statusLabel: statusByType[transacao.tipo],
       dateLabel: new Date(transacao.data).toLocaleDateString("pt-BR"),
       dueLabel:
         transacao.tipo === "EMPRESTIMO"
-          ? "Devolução em 06/06/2026"
+          ? "DevoluÃ§Ã£o em 06/06/2026"
           : statusByType[transacao.tipo],
     };
   })
@@ -229,10 +229,10 @@ export const studySpaces: StudySpace[] = [
   },
   {
     id: "s3",
-    name: "Área de leitura",
+    name: "Ãrea de leitura",
     type: "Silenciosa",
     capacity: "12 lugares",
-    time: "Amanhã, 09:00-11:00",
+    time: "AmanhÃ£, 09:00-11:00",
   },
 ];
 
@@ -246,7 +246,7 @@ export const bookStatusFilters: {
   value: BookStatusFilter;
 }[] = [
   { label: "Todos", value: "TODOS" },
-  { label: "Disponível", value: "DISPONIVEL" },
+  { label: "DisponÃ­vel", value: "DISPONIVEL" },
   { label: "Emprestado", value: "EMPRESTADO" },
 ];
 
@@ -260,3 +260,4 @@ export function formatTicketStatus(status: Ticket["status"]) {
 
   return labels[status];
 }
+

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { AppHero } from "@/components/layout/app-hero";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { SideNavigation } from "@/components/layout/side-navigation";
@@ -66,3 +66,4 @@ export function AppShell({
     </div>
   );
 }
+

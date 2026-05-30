@@ -1,4 +1,4 @@
-import type { IconName } from "@/lib/types";
+﻿import type { IconName } from "@/lib/types";
 
 type IconProps = {
   name: IconName;
@@ -224,3 +224,4 @@ export function Icon({ name, className = "" }: IconProps) {
       return null;
   }
 }
+

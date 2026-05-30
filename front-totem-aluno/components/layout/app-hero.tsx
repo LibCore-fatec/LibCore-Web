@@ -1,4 +1,4 @@
-import { StatusPill } from "@/components/ui/status-pill";
+﻿import { StatusPill } from "@/components/ui/status-pill";
 
 export function AppHero() {
   return (
@@ -6,14 +6,14 @@ export function AppHero() {
       <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
           <p className="mb-2 text-sm font-semibold uppercase text-[var(--cps-accent)]">
-            Área do aluno
+            Ãrea do aluno
           </p>
           <h1 className="text-4xl font-semibold leading-tight text-[var(--cps-text)] md:text-5xl">
             Bem-vindo ao Conecta
           </h1>
           <p className="mt-3 max-w-3xl text-xl text-[var(--cps-text)]/85">
-            Biblioteca autônoma inteligente com acervo, RFID, reservas e
-            histórico em tempo real.
+            Biblioteca autÃ´noma inteligente com acervo, RFID, reservas e
+            histÃ³rico em tempo real.
           </p>
         </div>
 
@@ -26,3 +26,4 @@ export function AppHero() {
     </section>
   );
 }
+

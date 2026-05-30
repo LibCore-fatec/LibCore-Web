@@ -9,6 +9,8 @@ import type {
   BookStatusFilter,
   CatalogBook,
   LibraryTab,
+  LoanRecord,
+  StudySpace,
   Ticket,
 } from "@/lib/types";
 
@@ -18,15 +20,20 @@ type LibraryContentProps = {
   availableCount: number;
   filteredBooks: CatalogBook[];
   loanedCount: number;
+  loanRecords: LoanRecord[];
   renewedLoanIds: number[];
   reservedSpaceIds: string[];
   searchTerm: string;
   selectedBook: CatalogBook;
   setor: string;
+  setores: string[];
   statusFilter: BookStatusFilter;
+  studySpaces: StudySpace[];
   ticketDescription: string;
   tickets: Ticket[];
+  tokenValidacao: string | null;
   onCreateTicket: () => void;
+  onGenerateToken: () => void;
   onOpenMap: (book: CatalogBook) => void;
   onReserveSpace: (spaceId: string, spaceName: string) => void;
   onRenewLoan: (loanId: number, title: string) => void;
@@ -44,15 +51,20 @@ export function LibraryContent({
   availableCount,
   filteredBooks,
   loanedCount,
+  loanRecords,
   renewedLoanIds,
   reservedSpaceIds,
   searchTerm,
   selectedBook,
   setor,
+  setores,
   statusFilter,
+  studySpaces,
   ticketDescription,
   tickets,
+  tokenValidacao,
   onCreateTicket,
+  onGenerateToken,
   onOpenMap,
   onReserveSpace,
   onRenewLoan,
@@ -70,8 +82,11 @@ export function LibraryContent({
         loanedCount={loanedCount}
         searchTerm={searchTerm}
         setor={setor}
+        setores={setores}
         statusFilter={statusFilter}
         ticketsCount={tickets.length}
+        tokenValidacao={tokenValidacao}
+        onGenerateToken={onGenerateToken}
         onSearchChange={onSearchChange}
         onSetorChange={onSetorChange}
         onStatusFilterChange={onStatusFilterChange}
@@ -92,6 +107,7 @@ export function LibraryContent({
       )}
       {activeTab === "historico" && (
         <HistoryPanel
+          loanRecords={loanRecords}
           renewedLoanIds={renewedLoanIds}
           onRenewLoan={onRenewLoan}
         />
@@ -99,6 +115,7 @@ export function LibraryContent({
       {activeTab === "espacos" && (
         <SpacesPanel
           reservedSpaceIds={reservedSpaceIds}
+          studySpaces={studySpaces}
           onReserveSpace={onReserveSpace}
         />
       )}

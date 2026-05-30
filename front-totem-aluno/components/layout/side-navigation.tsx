@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { navItems } from "@/lib/mock-data";
 import type { SectionId } from "@/lib/types";
 
@@ -20,7 +20,7 @@ export function SideNavigation({
       className={`relative hidden shrink-0 flex-col bg-[var(--cps-sidebar)] text-white shadow-lg transition-all duration-300 md:flex ${
         collapsed ? "w-[76px]" : "w-[320px]"
       }`}
-      aria-label="Navegação lateral"
+      aria-label="NavegaÃ§Ã£o lateral"
     >
       <nav className="flex flex-1 flex-col gap-1 px-5 py-9">
         {navItems.map((item) => {
@@ -81,3 +81,4 @@ export function SideNavigation({
     </aside>
   );
 }
+

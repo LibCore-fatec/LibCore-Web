@@ -1,4 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Front Totem Aluno
+
+Aplicação mobile/aluno integrada à API LibCore em português.
+
+Também inclui a rota `/totem-principal`, usada pelo celular que funciona como Totem Principal da biblioteca.
+
+## API
+
+Configure a URL da API da raiz do monorepo:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+```
+
+O app usa `/api/v1` para acervo, histórico, espaços, reservas, tickets e token numérico do aluno. Se a API estiver indisponível, os dados de `lib/mock-data.ts` ficam apenas como fallback de desenvolvimento.
 
 ## Getting Started
 

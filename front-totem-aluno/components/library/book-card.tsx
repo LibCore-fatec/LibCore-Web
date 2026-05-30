@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icons";
+﻿import { Icon } from "@/components/icons";
 import { InfoRow } from "@/components/ui/info-row";
 import type { CatalogBook } from "@/lib/types";
 
@@ -38,7 +38,7 @@ export function BookCard({ book, onOpenMap, onSelect }: BookCardProps) {
             {book.nome_livro}
           </h3>
           <p className="mt-2 text-sm font-medium text-[var(--cps-text-muted)]">
-            RFID {book.rfid_livro}
+            RFID {book.etiqueta_rfid}
           </p>
         </button>
 
@@ -48,12 +48,12 @@ export function BookCard({ book, onOpenMap, onSelect }: BookCardProps) {
       </div>
 
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-[var(--cps-border)] pt-4">
-        <InfoRow icon="rfid" text={book.rfid_livro} />
+        <InfoRow icon="rfid" text={book.etiqueta_rfid} />
         <button
           className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-[var(--cps-border)] transition hover:bg-[var(--cps-card-muted)]"
           onClick={() => onOpenMap(book)}
           type="button"
-          aria-label={`Ver localização de ${book.nome_livro}`}
+          aria-label={`Ver localizaÃ§Ã£o de ${book.nome_livro}`}
         >
           <Icon name="map" className="h-4 w-4" />
         </button>
@@ -61,3 +61,4 @@ export function BookCard({ book, onOpenMap, onSelect }: BookCardProps) {
     </article>
   );
 }
+
