@@ -11,10 +11,7 @@ type WebRfidGlobal = {
   onReading?: (callback: (value: string | { etiqueta_rfid?: string; rfid?: string; tag?: string }) => void) => void;
 };
 
-type NDEFReadingEvent = Event & {
-  serialNumber?: string;
-};
-
+type NDEFReadingEvent = Event & { serialNumber?: string };
 type NDEFReaderInstance = {
   scan: () => Promise<void>;
   onreading: ((event: NDEFReadingEvent) => void) | null;
@@ -30,11 +27,9 @@ declare global {
 }
 
 function normalizeReading(value: string | { etiqueta_rfid?: string; rfid?: string; tag?: string }) {
-  if (typeof value === "string") {
-    return value.trim();
-  }
-
-  return String(value.etiqueta_rfid ?? value.rfid ?? value.tag ?? "").trim();
+  return typeof value === "string"
+    ? value.trim()
+    : String(value.etiqueta_rfid ?? value.rfid ?? value.tag ?? "").trim();
 }
 
 export async function readRfidFromAvailableReader(): Promise<WebRfidReading> {
@@ -43,11 +38,7 @@ export async function readRfidFromAvailableReader(): Promise<WebRfidReading> {
   if (webRfid?.read) {
     await webRfid.connect?.();
     const etiqueta = normalizeReading(await webRfid.read());
-
-    if (!etiqueta) {
-      throw new Error("Leitor WebRFID retornou uma leitura vazia.");
-    }
-
+    if (!etiqueta) throw new Error("Leitor WebRFID retornou uma leitura vazia.");
     return { etiqueta_rfid: etiqueta, source: "webrfid" };
   }
 
@@ -67,23 +58,20 @@ export async function readRfidFromAvailableReader(): Promise<WebRfidReading> {
     });
   }
 
-  if (window.NDEFReader) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const reader = new window.NDEFReader?.();
-        await reader.scan();
-        reader.onreading = (event) => {
-          const etiqueta = event.serialNumber?.trim();
-          if (!etiqueta) {
-            reject(new Error("Etiqueta NFC lida, mas sem serial identificável."));
-            return;
-          }
-          resolve({ etiqueta_rfid: etiqueta, source: "webnfc" });
-        };
-        reader.onreadingerror = () => reject(new Error("Falha ao ler a etiqueta NFC."));
-      } catch (error) {
-        reject(error);
-      }
+  const Reader = window.NDEFReader;
+  if (Reader) {
+    return new Promise((resolve, reject) => {
+      const reader = new Reader();
+      reader.scan().catch(reject);
+      reader.onreading = (event) => {
+        const etiqueta = event.serialNumber?.trim();
+        if (!etiqueta) {
+          reject(new Error("Etiqueta NFC lida, mas sem serial identificável."));
+          return;
+        }
+        resolve({ etiqueta_rfid: etiqueta, source: "webnfc" });
+      };
+      reader.onreadingerror = () => reject(new Error("Falha ao ler a etiqueta NFC."));
     });
   }
 
