@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { findBookByRfid } from "@/lib/server/admin-books";
+import { ensureLocalSchema } from "@/lib/server/bootstrap";
 
 export async function GET(
   _request: Request,
   context: { params: Promise<{ etiqueta: string }> },
 ) {
   try {
+    await ensureLocalSchema();
     const { etiqueta } = await context.params;
     const livro = await findBookByRfid(decodeURIComponent(etiqueta));
 
