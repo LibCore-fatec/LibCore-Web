@@ -1,34 +1,23 @@
-# LibCore-Web
+# Documentação de acesso à aplicação LibCore-Web
 
-## Banco de dados Aiven MySQL
+## 1. Visão geral
 
-### Variáveis de ambiente
+O **LibCore-Web** é uma aplicação web desenvolvida com **Next.js 14**, **React 18**, **TypeScript** e **Tailwind CSS**. A interface atual representa o módulo de biblioteca do sistema do aluno, com recursos como consulta de acervo, reservas, notificações e navegação lateral.
 
-Crie um arquivo `.env` local a partir do `.env.example`:
+A aplicação utiliza dados mockados na tela principal e possui suporte a banco de dados **MySQL Aiven** para importação do schema.
 
-```env
-DB_HOST=libcore-libcore.d.aivencloud.com
-DB_PORT=25574
-DB_NAME=defaultdb
-DB_USER=avnadmin
-DB_PASSWORD=sua_senha_do_aiven
-DB_SSL=true
-```
+## 2. Pré-requisitos
 
-### Importar o schema
+Antes de executar o projeto, instale:
 
-Instale as dependências:
+- **Node.js 18 ou superior**
+- **npm**
+- **Git**
+- Acesso à internet
+- Credenciais do banco de dados Aiven, caso seja necessário importar ou conectar o banco
 
-```bash
-npm install
-```
-
-Depois rode:
+## 3. Clonar o repositório
 
 ```bash
-npm run db:import
-```
-
-O script executa `database/libcore_aiven.sql`, que já está ajustado para o Aiven: sem `CREATE DATABASE`, sem `USE libcore`, com collation compatível e tabelas na ordem correta.
-
-Se aparecer `ETIMEDOUT`, a rede atual está bloqueando a porta MySQL do Aiven. Nesse caso, rode em outra rede, como hotspot do celular, casa, GitHub Codespaces ou GitHub Actions.
+git clone https://github.com/LibCore-fatec/LibCore-Web.git
+cd LibCore-Web
